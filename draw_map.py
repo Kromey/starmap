@@ -136,13 +136,15 @@ for star in galaxy:
 print(c, 'stars')
 
 
-network = HyperspaceNetwork(galaxy)
+network = HyperspaceNetwork(galaxy, falloff=4)
 network.add_star(galaxy[0])
-network.explore(75, falloff=4)
+for i in range(75):
+    network.discover_route()
 
-network2 = HyperspaceNetwork(galaxy)
+network2 = HyperspaceNetwork(galaxy, falloff=6)
 network2.add_star(galaxy[0])
-network2.explore(60, falloff=6)
+for i in range(60):
+    network2.discover_route()
 
 
 img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))

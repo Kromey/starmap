@@ -3,7 +3,7 @@ import random
 
 
 class HyperspaceNetwork:
-    def __init__(self, galaxy):
+    def __init__(self, galaxy, max_dist=7.3, falloff=4.0, stop_cost=0.5, hub_factor=0.5):
         self.__galaxy = galaxy
         self.__routes = []
         self.__explored = []
@@ -12,35 +12,37 @@ class HyperspaceNetwork:
             self.__routes.append(None)
             self.__explored.append(False)
 
+        self.max_dist = max_dist
+        self.falloff = falloff
+        self.stop_cost = stop_cost
+        self.hub_factor = hub_factor
+
     def add_star(self, star):
         self.__explored[self.__galaxy.index(star)] = True
 
-    def explore(self, stars=40, max_dist=7.3, falloff=4.0, stop_cost=0.5, hub_factor=0.5):
-        for i in range(stars):
-            explored = self._get_explored(stop_cost=stop_cost, hub_factor=hub_factor)
-            starti = explored[math.floor(random.random() ** (falloff/2) * len(explored))]
-            start = self.__galaxy[starti]
+    def discover_route(self):
+        explored = self._get_explored()
+        starti = explored[math.floor(random.random() ** (self.falloff/2) * len(explored))]
+        start = self.__galaxy[starti]
 
-            candidates = self._get_candidates(start, max_dist)
+        candidates = self._get_candidates(start)
 
-            otheri = candidates[math.floor(random.random() ** falloff * len(candidates))]
-            other = self.__galaxy[otheri]
+        otheri = candidates[math.floor(random.random() ** self.falloff * len(candidates))]
+        other = self.__galaxy[otheri]
 
-            d = start.dist(other)
+        d = start.dist(other)
 
-            ab = d * (random.random()*0.5 + 0.75)
-            ba = d * (random.random()*0.5 + 0.75)
+        ab = d * (random.random()*0.5 + 0.75)
+        ba = d * (random.random()*0.5 + 0.75)
 
-            print('Yay! Got one! From: ({si}) {sn}; To: ({ei}) {en}'.format(
-                si=starti,
-                sn=start.name,
-                ei=otheri,
-                en=other.name,
-            ))
+        print('Yay! Got one! From: ({si}) {sn}; To: ({ei}) {en}'.format(
+            si=starti,
+            sn=start.name,
+            ei=otheri,
+            en=other.name,
+        ))
 
-            self._add_route(starti, otheri, ab, ba)
-
-        print([r for r in self.__routes if r])
+        self._add_route(starti, otheri, ab, ba)
 
     @property
     def routes(self):
@@ -55,12 +57,12 @@ class HyperspaceNetwork:
 
                 yield HyperspaceRoute(self.__galaxy[a], self.__galaxy[b])
 
-    def _get_explored(self, stop_cost=0, hub_factor=1.0):
+    def _get_explored(self):
         explored = []
 
         for i in range(len(self.__explored)):
             if self.__explored[i]:
-                cost = self._get_cost(i, stop_cost=stop_cost, hub_factor=hub_factor)
+                cost = self._get_cost(i)
 
                 explored.append((i,cost))
 
@@ -68,7 +70,7 @@ class HyperspaceNetwork:
 
         return [x[0] for x in explored]
 
-    def _get_cost(self, dest, start=0, visited=None, stop_cost=0, hub_factor=1.0):
+    def _get_cost(self, dest, start=0, visited=None):
         # Stop if we're there
         if dest == start:
             return 0
@@ -99,20 +101,20 @@ class HyperspaceNetwork:
                     cost = min(cost, c)
 
         if cost:
-            cost += stop_cost
+            cost += self.stop_cost
             if len(self.__routes[start]) > 3:
-                cost *= hub_factor
+                cost *= self.hub_factor
 
         return cost
 
-    def _get_candidates(self, start, dmax):
+    def _get_candidates(self, start):
         candidates = []
 
         for i in range(len(self.__galaxy)):
             star = self.__galaxy[i]
             d = start.dist(star)
 
-            if d > 0 and d < dmax:
+            if d > 0 and d < self.max_dist:
                 candidates.append((i,d))
 
         candidates.sort(key=lambda x: x[1])
