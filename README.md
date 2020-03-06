@@ -1,6 +1,6 @@
 # Hyperspace Network Simulation
 
-This program is intended to simulate the exploration of hyperspace and expansion of the hyperspace network for the science-fiction world of [Exogenesis](https://world.payloadgame.dev/). The star catalog in use is the HabHYG dataset, compiled by [Winchell Chung](http://www.projectrho.com/public_html/starmaps/catalogues.php#id--Catalogues--HabHYG).
+This program is intended to simulate the exploration of hyperspace and expansion of the hyperspace network for the science-fiction world of [Exogenesis]. The star catalog in use is the HabHYG dataset, compiled by [Winchell Chung][habhyg].
 
 ## Prerequisites
 
@@ -15,3 +15,6 @@ $ pip install -r requirements.txt
 ```bash
 $ python draw_map.py
 ```
+
+[exogenesis]: https://world.payloadgame.dev/
+[habhyg]: http://www.projectrho.com/public_html/starmaps/catalogues.php#id--Catalogues--HabHYG
