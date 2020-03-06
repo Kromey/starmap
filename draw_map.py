@@ -8,7 +8,7 @@ from hyperspace import HyperspaceNetwork
 from star import Star,Galaxy
 
 
-STARS = 'stars_pruned.csv'
+STARS = 'HabHyg_local.csv'
 MAP = 'map.png'
 
 # Dimensions of map in parsecs

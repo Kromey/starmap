@@ -1,8 +1,8 @@
 import csv
 
 
-IN = 'stars.csv'
-OUT = 'stars_pruned.csv'
+IN = 'HabHyg.csv'
+OUT = 'HabHyg_local.csv'
 RANGE = 16.999
 
 
