@@ -4,8 +4,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
-from hyperspace import HyperspaceNetwork
-from star import Star,Galaxy
+from simulation import HyperspaceNetwork,Galaxy
 
 
 STARS = 'HabHyg_local.csv'
