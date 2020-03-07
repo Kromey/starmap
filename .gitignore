@@ -1,4 +1,5 @@
-# Ignore generated images
+# Ignore generated files
+routes.csv
 *.png
 
 # Byte-compiled / optimized / DLL files
