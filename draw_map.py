@@ -4,10 +4,11 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
-from simulation import HyperspaceNetwork,Galaxy
+from simulation import Star
 
 
 STARS = 'HabHyg_local.csv'
+ROUTES = 'routes.csv'
 MAP = 'map.png'
 
 # Dimensions of map in parsecs
@@ -85,7 +86,7 @@ def draw_ui(img):
 
     ui.ellipse([projection(-17,17),projection(17,-17)], outline=(238,238,238,255), width=2)
 
-galaxy = Galaxy.from_file(STARS)
+stars = {}
 queue = {
     'lines': {
         'posz': [],
@@ -96,85 +97,69 @@ queue = {
         'negz': [],
     },
 }
+with open(STARS, 'r', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
 
-for star in galaxy:
-    pos = projection(*star.coords)
+    for star in reader:
+        star = Star.from_dict(star)
+        stars[star.name] = star
 
-    bounds = [
-        (pos[0]-5, pos[1]-5),
-        (pos[0]+5, pos[1]+5),
-    ]
+        pos = projection(*star.coords)
+        bounds = [
+            (pos[0]-5, pos[1]-5),
+            (pos[0]+5, pos[1]+5),
+        ]
 
-    if star.name == 'Sol':
-        outline = (0,255,0,255)
-    elif star.name == 'Gl 447':
-        outline = (0,136,255,255)
-    elif star.name == 'Gl 46':
-        outline = (255,0,0,255)
-    else:
-        outline = (170,170,170,255)
+        if star.name == 'Sol':
+            outline = (0,255,0,255)
+        elif star.name == 'Gl 447':
+            outline = (0,136,255,255)
+        elif star.name == 'Gl 46':
+            outline = (255,0,0,255)
+        else:
+            outline = (170,170,170,255)
 
-    if star.is_habitable:
-        fill = outline
-    else:
-        fill = (0,0,0,255)
+        if star.is_habitable:
+            fill = outline
+        else:
+            fill = (0,0,0,255)
 
-    k = 'posz' if float(star.coords[2]) >= 0 else 'negz'
-
-    if fill != (0,0,0,255):
-        linefill = fill
-    else:
-        linefill = (33,33,33,255)
-
-    queue['lines'][k].append(([pos,projection(star.coords[0], star.coords[1], 0)], linefill))
-    queue['stars'][k].append((bounds, fill, outline))
-
-c = 0
-for star in galaxy:
-    c += 1
-print(c, 'stars')
-
-
-network = HyperspaceNetwork(galaxy, falloff=4)
-network.add_star(galaxy[0])
-for i in range(75):
-    network.discover_route()
-
-network2 = HyperspaceNetwork(galaxy, falloff=6)
-network2.add_star(galaxy[0])
-for i in range(60):
-    network2.discover_route()
+        k = 'posz' if float(star.coords[2]) >= 0 else 'negz'
+        queue['stars'][k].append((bounds, fill, outline))
 
 
 img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
 
-stars = ImageDraw.Draw(img)
+starmap = ImageDraw.Draw(img)
 
-# Draw neg-z lines and stars:
-#for line in queue['lines']['negz']:
-#    stars.line(line[0], fill=line[1])
+# Draw neg-z stars:
 for star in queue['stars']['negz']:
-    stars.ellipse(star[0], fill=star[1], outline=star[2], width=2)
+    starmap.ellipse(star[0], fill=star[1], outline=star[2], width=2)
 
-# Now draw UI "on top of" neg-z lines/stars
+# Now draw UI "on top of" neg-z stars
 draw_ui(img)
 
-# Draw pos-z lines and stars:
-#for line in queue['lines']['posz']:
-#    stars.line(line[0], fill=line[1])
+# Draw pos-z stars:
 for star in queue['stars']['posz']:
-    stars.ellipse(star[0], fill=star[1], outline=star[2], width=2)
+    starmap.ellipse(star[0], fill=star[1], outline=star[2], width=2)
 
 
 overlay = Image.new('RGBA', img.size, (255,255,255,0))
 routes = ImageDraw.Draw(overlay)
 
-for route in network.routes:
-    routes.line([projection(*route.a.coords), projection(*route.b.coords)], (255,136,136,136), width=1)
+with open(ROUTES, 'r', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
 
-for route in network2.routes:
-    routes.line([projection(*route.a.coords), projection(*route.b.coords)], (136,255,136,136), width=1)
+    for route in reader:
+        a = stars[route['A']]
+        b = stars[route['B']]
 
+        if route['Owner'] == 'Red':
+            color = (255,136,136,136)
+        elif route['Owner'] == 'Green':
+            color = (136,255,136,136)
+
+        routes.line([projection(*a.coords), projection(*b.coords)], color, width=1)
 
 out = Image.alpha_composite(img, overlay)
 out.save(MAP)
