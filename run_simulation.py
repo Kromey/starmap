@@ -1,22 +1,32 @@
 import csv
+import random
 
 
 from simulation import HyperspaceNetwork,Galaxy
 
 
 STARS = 'HabHyg_local.csv'
+PROB_PER_STEP = 0.40
+STEPS = 200
 
 galaxy = Galaxy.from_file(STARS)
 
 network = HyperspaceNetwork(galaxy, falloff=4)
 network.add_star(galaxy[0])
-for i in range(75):
-    network.discover_route()
 
 network2 = HyperspaceNetwork(galaxy, falloff=6)
 network2.add_star(galaxy[0])
-for i in range(60):
-    network2.discover_route()
+
+networks = [network,network2]
+
+count = 0
+for i in range(STEPS):
+    while random.random() < PROB_PER_STEP:
+        count += 1
+        random.choice(networks).discover_route()
+
+print()
+print('Found', count, 'routes')
 
 
 with open('routes.csv', 'w', newline='') as csvfile:
