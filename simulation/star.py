@@ -98,3 +98,12 @@ class Star:
     def coords(self):
         return self.__coords
 
+    def __hash__(self):
+        return hash((self.name, self.coords))
+
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+
+    def __ne__(self, other):
+        return not self == other
+
