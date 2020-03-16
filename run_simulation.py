@@ -19,14 +19,9 @@ network2.add_star(galaxy[0])
 
 networks = [network,network2]
 
-count = 0
 for i in range(STEPS):
-    while random.random() < PROB_PER_STEP:
-        count += 1
-        random.choice(networks).discover_route()
-
-print()
-print('Found', count, 'routes')
+    for n in networks:
+        n.explore()
 
 
 with open('routes.csv', 'w', newline='') as csvfile:

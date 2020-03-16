@@ -2,6 +2,7 @@ import math
 import random
 
 
+from simulation.hyperspace.explorer import Explorer
 from simulation.hyperspace.route import HyperspaceRoute
 
 
@@ -10,6 +11,7 @@ class HyperspaceNetwork:
         self.__galaxy = galaxy
         self.__routes = []
         self.__explored = set()
+        self.__explorers = [Explorer(galaxy)]
 
         self.max_dist = max_dist
         self.falloff = falloff
@@ -18,6 +20,15 @@ class HyperspaceNetwork:
 
     def add_star(self, star):
         self.__explored.add(star)
+
+    def explore(self):
+        for exp in self.__explorers:
+            route = exp.explore()
+
+            if route is not None:
+                self._add_route(route)
+
+        self.__explorers = [exp for exp in self.__explorers if exp.is_alive]
 
     def discover_route(self):
         explored = list(self.__explored)
