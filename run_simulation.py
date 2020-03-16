@@ -13,9 +13,12 @@ galaxy = Galaxy.from_file(STARS)
 
 network = HyperspaceNetwork(galaxy, falloff=4)
 network.add_star(galaxy[0])
+network.spawn_explorer()
+network.spawn_explorer()
 
 network2 = HyperspaceNetwork(galaxy, falloff=6)
 network2.add_star(galaxy[0])
+network2.spawn_explorer()
 
 networks = [network,network2]
 

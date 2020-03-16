@@ -11,7 +11,7 @@ class HyperspaceNetwork:
         self.__galaxy = galaxy
         self.__routes = []
         self.__explored = set()
-        self.__explorers = [Explorer(galaxy)]
+        self.__explorers = []
 
         self.max_dist = max_dist
         self.falloff = falloff
@@ -29,6 +29,9 @@ class HyperspaceNetwork:
                 self._add_route(route)
 
         self.__explorers = [exp for exp in self.__explorers if exp.is_alive]
+
+    def spawn_explorer(self):
+        self.__explorers.append(Explorer(self.__galaxy))
 
     @property
     def routes(self):
