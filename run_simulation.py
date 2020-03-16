@@ -28,7 +28,7 @@ for i in range(STEPS):
 
 
 with open('routes.csv', 'w', newline='') as csvfile:
-    fieldnames = ['Owner','A','B']
+    fieldnames = ['Owner','A','B','Distance','AB','BA']
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
     writer.writeheader()
@@ -38,6 +38,9 @@ with open('routes.csv', 'w', newline='') as csvfile:
             'Owner': 'Red',
             'A': route.a.name,
             'B': route.b.name,
+            'Distance': route.dist,
+            'AB': route.ab,
+            'BA': route.ba,
         })
 
     for route in network2.routes:
@@ -45,6 +48,9 @@ with open('routes.csv', 'w', newline='') as csvfile:
             'Owner': 'Green',
             'A': route.a.name,
             'B': route.b.name,
+            'Distance': route.dist,
+            'AB': route.ab,
+            'BA': route.ba,
         })
 
 
