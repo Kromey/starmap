@@ -30,8 +30,18 @@ class HyperspaceNetwork:
 
         self.__explorers = [exp for exp in self.__explorers if exp.is_alive]
 
+        if random.random() < 0.05:
+            self.spawn_explorer()
+
     def spawn_explorer(self):
-        self.__explorers.append(Explorer(self.__galaxy))
+        exp = Explorer(self.__galaxy)
+
+        stars = list(self.__explored)
+        #stars.sort(key=self._get_cost)
+
+        exp.position = stars[math.floor(abs(random.random() - random.random()) * len(stars))]
+
+        self.__explorers.append(exp)
 
     @property
     def routes(self):

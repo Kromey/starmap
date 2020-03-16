@@ -18,9 +18,6 @@ class Explorer:
     def explore(self):
         if random.random() < self.__odds:
             self.__fail_count = 0
-            print('Found one at', self.__odds, 'odds')
-            self.__odds = 1 - (0.999 * (1 - self.__odds))
-            print('\tOdds now', self.__odds)
 
             neighbors = self._get_neighbors()
             other = neighbors[math.floor(abs(random.random() - random.random()) * len(neighbors))]
@@ -44,12 +41,11 @@ class Explorer:
             return route
         else:
             self.__fail_count += 1
-            print('I failed! Odds were', self.__odds, self.__fail_count, self.is_dead, self.is_alive)
             return None
 
     @property
     def is_dead(self):
-        return self.__fail_count > 10
+        return self.__fail_count > 5
 
     @property
     def is_alive(self):
