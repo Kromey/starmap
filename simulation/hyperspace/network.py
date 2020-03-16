@@ -30,29 +30,6 @@ class HyperspaceNetwork:
 
         self.__explorers = [exp for exp in self.__explorers if exp.is_alive]
 
-    def discover_route(self):
-        explored = list(self.__explored)
-        explored.sort(key=self._get_cost)
-
-        start = explored[math.floor(random.random() ** (self.falloff/2) * len(explored))]
-
-        candidates = self._get_candidates(start)
-
-        other = candidates[math.floor(random.random() ** self.falloff * len(candidates))]
-
-        d = start.dist(other)
-
-        ab = d * (random.random()*0.5 + 0.75)
-        ba = d * (random.random()*0.5 + 0.75)
-
-        print('Yay! Got one! From: {sn}; To: {en}'.format(
-            sn=start.name,
-            en=other.name,
-        ))
-
-        route = HyperspaceRoute(start, other, ab, ba)
-        self._add_route(route)
-
     @property
     def routes(self):
         for route in self.__routes:
