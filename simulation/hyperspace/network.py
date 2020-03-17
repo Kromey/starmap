@@ -7,21 +7,29 @@ from simulation.hyperspace.route import HyperspaceRoute
 
 
 class HyperspaceNetwork:
-    def __init__(self, galaxy, max_dist=7.3, falloff=4.0, stop_cost=0.5, hub_factor=0.5):
+    def __init__(self, galaxy, max_dist=5.3, min_agents=1):
         self.__galaxy = galaxy
         self.__routes = []
         self.__explored = set()
         self.__explorers = []
 
         self.max_dist = max_dist
-        self.falloff = falloff
-        self.stop_cost = stop_cost
-        self.hub_factor = hub_factor
+        self.min_agents = min_agents
+
+        self.add_star(galaxy[0])
 
     def add_star(self, star):
         self.__explored.add(star)
 
     def explore(self):
+        # Make sure we have our minimum number of explorers
+        for x in range(self.min_agents - len(self.__explorers)):
+            if random.random() < 0.25:
+                self.spawn_explorer()
+
+        if random.random() < 0.05:
+            self.spawn_explorer()
+
         for exp in self.__explorers:
             route = exp.explore()
 
@@ -30,11 +38,8 @@ class HyperspaceNetwork:
 
         self.__explorers = [exp for exp in self.__explorers if exp.is_alive]
 
-        if random.random() < 0.05:
-            self.spawn_explorer()
-
     def spawn_explorer(self):
-        exp = Explorer(self.__galaxy)
+        exp = Explorer(self.__galaxy, max_dist = self.max_dist)
 
         stars = list(self.__explored)
         #stars.sort(key=self._get_cost)
