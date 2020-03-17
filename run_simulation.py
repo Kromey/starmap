@@ -21,7 +21,10 @@ for i in range(STEPS):
     for n in networks:
         n.explore()
 
-print('Found', sum([len(list(n.routes)) for n in networks]), 'routes')
+print('Found {routes} routes connecting {stars} stars'.format(
+    routes=sum([len(list(n.routes)) for n in networks]),
+    stars=sum([len(n.stars) for n in networks]),
+))
 
 
 with open('routes.csv', 'w', newline='') as csvfile:

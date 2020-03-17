@@ -41,7 +41,7 @@ class HyperspaceNetwork:
     def spawn_explorer(self):
         exp = Explorer(self.__galaxy, max_dist = self.max_dist)
 
-        stars = list(self.__explored)
+        stars = self.stars
         #stars.sort(key=self._get_cost)
 
         exp.position = stars[math.floor(abs(random.random() - random.random()) * len(stars))]
@@ -52,6 +52,10 @@ class HyperspaceNetwork:
     def routes(self):
         for route in self.__routes:
             yield route
+
+    @property
+    def stars(self):
+        return list(self.__explored)
 
     def _get_cost(self, dest, start=None, visited=None):
         if start is None:
