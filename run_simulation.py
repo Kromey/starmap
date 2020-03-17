@@ -26,6 +26,8 @@ for i in range(STEPS):
     for n in networks:
         n.explore()
 
+print('Found', sum([len(list(n.routes)) for n in networks]), 'routes')
+
 
 with open('routes.csv', 'w', newline='') as csvfile:
     fieldnames = ['Owner','A','B','Distance','AB','BA']
