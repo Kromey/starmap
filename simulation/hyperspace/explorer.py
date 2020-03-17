@@ -13,11 +13,11 @@ class Explorer:
         self.max_dist = max_dist
         self.position = galaxy[0]
 
-        self.__fail_count = 0
+        self.__discoveries = 0
 
     def explore(self):
         if random.random() < self.__odds:
-            self.__fail_count = 0
+            self.__discoveries += 1
 
             neighbors = self._get_neighbors()
             other = neighbors[math.floor(abs(random.random() - random.random()) * len(neighbors))]
@@ -40,12 +40,11 @@ class Explorer:
 
             return route
         else:
-            self.__fail_count += 1
             return None
 
     @property
     def is_dead(self):
-        return self.__fail_count > 5
+        return random.random() < 0.25 * (self.__discoveries - 2)
 
     @property
     def is_alive(self):
