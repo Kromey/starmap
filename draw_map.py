@@ -78,8 +78,7 @@ def draw_ui(img):
     ui = ImageDraw.Draw(img)
 
     for r in range(0,6):
-        r = (r + 1) * 5
-        r = r / 2
+        r = (r + 1) * 2.5
 
         ui.ellipse([projection(-r,-r),projection(r,r)], outline=(136,136,136,255), width=2)
 
