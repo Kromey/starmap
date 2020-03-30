@@ -44,7 +44,9 @@ def projection(x,y,z=None):
     coords = np.array([
         float(x),
         float(y),
-        float(z),
+        # Not sure why, but we need to invert z here to get galactic north/south
+        # to show up properly at the top/bottom of the image
+        float(-z),
     ])
 
     if z_rot:
@@ -60,7 +62,7 @@ def projection(x,y,z=None):
 
     # Translate origin to upper left of image
     px = MAP_PC[0]/2 + coords[0]
-    py = MAP_PC[1]/2 - coords[1] #Flipping y-axis into image coordinates
+    py = MAP_PC[1]/2 + coords[1]
 
     # Scale
     px = px * MAP_SCALE
@@ -79,12 +81,12 @@ def draw_ui(img):
         r = (r + 1) * 5
         r = r / 2
 
-        ui.ellipse([projection(-r,r),projection(r,-r)], outline=(136,136,136,255), width=2)
+        ui.ellipse([projection(-r,-r),projection(r,r)], outline=(136,136,136,255), width=2)
 
     ui.line([projection(0,-17,0),projection(0,17,0)], fill=(136,136,136,255), width=2)
     ui.line([projection(-17,0,0),projection(17,0,0)], fill=(136,136,136,255), width=2)
 
-    ui.ellipse([projection(-17,17),projection(17,-17)], outline=(238,238,238,255), width=2)
+    ui.ellipse([projection(-17,-17),projection(17,17)], outline=(238,238,238,255), width=2)
 
 stars = {}
 queue = {
@@ -116,6 +118,10 @@ with open(STARS, 'r', newline='') as csvfile:
             outline = (0,136,255,255)
         elif star.name == 'Gl 46':
             outline = (255,0,0,255)
+        elif star.name == 'NN 4013':
+            outline = (255,0,255,255)
+        elif star.name == 'NN 4219':
+            outline = (255,255,0,255)
         else:
             outline = (170,170,170,255)
 
