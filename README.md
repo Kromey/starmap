@@ -13,6 +13,17 @@ $ pip install -r requirements.txt
 ## Running the simulation
 
 ```bash
+$ python run_simulation.py
+```
+
+Simulation results are saved as CSV in `routes.csv`.
+
+## Generating the starmap
+
+After you have run the simulation, or otherwise obtained a `routes.csv` file,
+you can generate the 2D starmap with the following command:
+
+```bash
 $ python draw_map.py
 ```
 
