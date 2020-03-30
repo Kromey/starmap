@@ -12,12 +12,12 @@ ROUTES = 'routes.csv'
 MAP = 'map.png'
 
 # Dimensions of map in parsecs
-MAP_PC = (40,40)
+MAP_PC = (36,36)
 # Map scale in pixels/parsec
 MAP_SCALE = 40
 
 ANGLE_X = math.radians(75)
-ANGLE_Z = math.radians(10)
+ANGLE_Z = math.radians(80)
 ROT_X = np.array([
     [1, 0, 0],
     [0, math.cos(ANGLE_X), -math.sin(ANGLE_X)],
@@ -85,6 +85,24 @@ def draw_ui(img):
 
     ui.line([projection(0,-17,0),projection(0,17,0)], fill=(136,136,136,255), width=2)
     ui.line([projection(-17,0,0),projection(17,0,0)], fill=(136,136,136,255), width=2)
+
+    # Draw a coreward-pointing reference marker
+    points = [
+        projection(18,0,0),
+        projection(17,0.45,0),
+        projection(17.3,0,0),
+        projection(17,-0.45,0),
+    ]
+    ui.polygon(points, fill=(0,0,255,255))
+
+    # Draw a spinward-pointing reference marker
+    points = [
+        projection(0,18,0),
+        projection(0.45,17,0),
+        projection(0,17.3,0),
+        projection(-0.45,17,0),
+    ]
+    ui.polygon(points, fill=(255,0,0,255))
 
     ui.ellipse([projection(-17,-17),projection(17,17)], outline=(238,238,238,255), width=2)
 
