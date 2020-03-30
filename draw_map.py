@@ -85,25 +85,28 @@ def draw_ui(img):
     ui.line([projection(0,-17,0),projection(0,17,0)], fill=(136,136,136,255), width=2)
     ui.line([projection(-17,0,0),projection(17,0,0)], fill=(136,136,136,255), width=2)
 
-    # Draw a coreward-pointing reference marker
+    # Outermost ring is slightly different, so ensure it's above our lines
+    ui.ellipse([projection(-17,-17),projection(17,17)], outline=(238,238,238,255), width=2)
+
+    ## Directional indicators
+    ## Drawn last so they overlay our rings/lines
+    # Coreward
     points = [
         projection(18,0,0),
-        projection(17,0.45,0),
-        projection(17.3,0,0),
-        projection(17,-0.45,0),
+        projection(16.6,0.45,0),
+        projection(16.9,0,0),
+        projection(16.6,-0.45,0),
     ]
     ui.polygon(points, fill=(0,0,255,255))
 
-    # Draw a spinward-pointing reference marker
+    # Spinward
     points = [
         projection(0,18,0),
-        projection(0.45,17,0),
-        projection(0,17.3,0),
-        projection(-0.45,17,0),
+        projection(0.45,16.6,0),
+        projection(0,16.9,0),
+        projection(-0.45,16.6,0),
     ]
     ui.polygon(points, fill=(255,0,0,255))
-
-    ui.ellipse([projection(-17,-17),projection(17,17)], outline=(238,238,238,255), width=2)
 
 stars = {}
 queue = {
