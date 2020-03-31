@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
-from render import Projection
+from render import Projection, UI
 from simulation import Star
 
 
@@ -18,43 +18,10 @@ MAP_PC = (36,36)
 MAP_SCALE = 40
 
 projection = Projection(MAP_PC, MAP_SCALE, 75, 80)
+ui = UI(projection)
 
 # Size of our image as a function of map dimensions and scale
 IMG_SIZE = (MAP_PC[0]*MAP_SCALE, MAP_PC[1]*MAP_SCALE)
-
-def draw_ui(img):
-    ui = ImageDraw.Draw(img)
-
-    for r in range(0,6):
-        r = (r + 1) * 2.5
-
-        ui.ellipse(projection.ellipse((-r,-r),(r,r)), outline=(136,136,136,255), width=2)
-
-    ui.line([projection.point(0,-17),projection.point(0,17)], fill=(136,136,136,255), width=2)
-    ui.line([projection.point(-17,0),projection.point(17,0)], fill=(136,136,136,255), width=2)
-
-    # Outermost ring is slightly different, so ensure it's above our lines
-    ui.ellipse(projection.ellipse((-17,-17),(17,17)), outline=(238,238,238,255), width=2)
-
-    ## Directional indicators
-    ## Drawn last so they overlay our rings/lines
-    # Coreward
-    points = projection.points([
-        (18,0),
-        (16.6,0.45),
-        (16.9,0),
-        (16.6,-0.45),
-    ])
-    ui.polygon(points, fill=(0,0,255,255))
-
-    # Spinward
-    points = projection.points([
-        (0,18),
-        (0.45,16.6),
-        (0,16.9),
-        (-0.45,16.6),
-    ])
-    ui.polygon(points, fill=(255,0,0,255))
 
 stars = {}
 queue = {
@@ -111,7 +78,7 @@ for star in queue['stars']['negz']:
     starmap.ellipse(star[0], fill=star[1], outline=star[2], width=2)
 
 # Now draw UI "on top of" neg-z stars
-draw_ui(img)
+ui.draw(img)
 
 # Draw pos-z stars:
 for star in queue['stars']['posz']:
