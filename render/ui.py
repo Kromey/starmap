@@ -21,7 +21,7 @@ class UI:
 
         ## Directional indicators
         ## Drawn last so they overlay our rings/lines
-        # Coreward
+        # Coreward -- blue arrow
         points = self.projection.points([
             (18,0),
             (16.6,0.45),
@@ -30,7 +30,7 @@ class UI:
         ])
         ui.polygon(points, fill=(0,0,255,255))
 
-        # Spinward
+        # Spinward -- red arrow
         points = self.projection.points([
             (0,18),
             (0.45,16.6),

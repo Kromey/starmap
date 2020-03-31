@@ -15,7 +15,7 @@ MAP_PC = (36,36)
 # Map scale in pixels/parsec
 MAP_SCALE = 20
 
-projection = Projection(MAP_PC, MAP_SCALE, 75, 80)
+projection = Projection(MAP_PC, MAP_SCALE, 75, -5)
 ui = UI(projection)
 plotter = Star(projection)
 

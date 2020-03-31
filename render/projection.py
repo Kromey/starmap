@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Projection:
-    def __init__(self, size, scale, rotation_x=0, rotation_z=90):
+    def __init__(self, size, scale, rotation_x=0, rotation_z=0):
         self.__size = size
         self.__scale = scale
 
@@ -21,7 +21,8 @@ class Projection:
             ])
 
         if z is not None:
-            angle = math.radians(z)
+            # Normalize 0-degree z rotation to a more "natural" one
+            angle = math.radians(z+90)
             self.__rotation['z'] = np.array([
                 [math.cos(angle), -math.sin(angle), 0],
                 [math.sin(angle), math.cos(angle), 0],
@@ -40,10 +41,10 @@ class Projection:
     def point(self, x, y, z=0, skip_z=False):
         # Ensure proper types for our input
         coords = np.array([
-            float(x),
+            ## Swap x,y to orient them properly in the output image
             float(y),
-            # Not sure why, but we need to invert z here to get galactic north/south
-            # to show up properly at the top/bottom of the image
+            float(x),
+            ## Invert z to orient it properly in the output image
             float(-z),
         ])
 
