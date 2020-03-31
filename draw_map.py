@@ -4,6 +4,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 
+from render import Projection
 from simulation import Star
 
 
@@ -16,63 +17,10 @@ MAP_PC = (36,36)
 # Map scale in pixels/parsec
 MAP_SCALE = 40
 
-ANGLE_X = math.radians(75)
-ANGLE_Z = math.radians(80)
-ROT_X = np.array([
-    [1, 0, 0],
-    [0, math.cos(ANGLE_X), -math.sin(ANGLE_X)],
-    [0, math.sin(ANGLE_X), math.cos(ANGLE_X)],
-])
-ROT_Z = np.array([
-    [math.cos(ANGLE_Z), -math.sin(ANGLE_Z), 0],
-    [math.sin(ANGLE_Z), math.cos(ANGLE_Z), 0],
-    [0, 0, 1],
-])
+projection = Projection(MAP_PC, MAP_SCALE, 75, 80)
 
 # Size of our image as a function of map dimensions and scale
 IMG_SIZE = (MAP_PC[0]*MAP_SCALE, MAP_PC[1]*MAP_SCALE)
-
-def projection(x,y,z=None):
-    # We'll skip the z rotation for 2D elements
-    if z is None:
-        z = 0
-        z_rot = False
-    else:
-        z_rot = True
-
-    # Ensure proper types for our input
-    coords = np.array([
-        float(x),
-        float(y),
-        # Not sure why, but we need to invert z here to get galactic north/south
-        # to show up properly at the top/bottom of the image
-        float(-z),
-    ])
-
-    if z_rot:
-        # Rotation around z-axis
-        coords = np.matmul(coords, ROT_Z)
-        pass
-
-    ## Rotation around x-axis
-    coords = np.matmul(coords, ROT_X)
-
-    ## DROP Z HERE
-    ## This is where z stops mattering for our orthographic projection
-
-    # Translate origin to upper left of image
-    px = MAP_PC[0]/2 + coords[0]
-    py = MAP_PC[1]/2 + coords[1]
-
-    # Scale
-    px = px * MAP_SCALE
-    py = py * MAP_SCALE
-
-    # Round
-    px = round(px)
-    py = round(py)
-
-    return px, py
 
 def draw_ui(img):
     ui = ImageDraw.Draw(img)
@@ -80,32 +28,32 @@ def draw_ui(img):
     for r in range(0,6):
         r = (r + 1) * 2.5
 
-        ui.ellipse([projection(-r,-r),projection(r,r)], outline=(136,136,136,255), width=2)
+        ui.ellipse(projection.ellipse((-r,-r),(r,r)), outline=(136,136,136,255), width=2)
 
-    ui.line([projection(0,-17,0),projection(0,17,0)], fill=(136,136,136,255), width=2)
-    ui.line([projection(-17,0,0),projection(17,0,0)], fill=(136,136,136,255), width=2)
+    ui.line([projection.point(0,-17),projection.point(0,17)], fill=(136,136,136,255), width=2)
+    ui.line([projection.point(-17,0),projection.point(17,0)], fill=(136,136,136,255), width=2)
 
     # Outermost ring is slightly different, so ensure it's above our lines
-    ui.ellipse([projection(-17,-17),projection(17,17)], outline=(238,238,238,255), width=2)
+    ui.ellipse(projection.ellipse((-17,-17),(17,17)), outline=(238,238,238,255), width=2)
 
     ## Directional indicators
     ## Drawn last so they overlay our rings/lines
     # Coreward
-    points = [
-        projection(18,0,0),
-        projection(16.6,0.45,0),
-        projection(16.9,0,0),
-        projection(16.6,-0.45,0),
-    ]
+    points = projection.points([
+        (18,0),
+        (16.6,0.45),
+        (16.9,0),
+        (16.6,-0.45),
+    ])
     ui.polygon(points, fill=(0,0,255,255))
 
     # Spinward
-    points = [
-        projection(0,18,0),
-        projection(0.45,16.6,0),
-        projection(0,16.9,0),
-        projection(-0.45,16.6,0),
-    ]
+    points = projection.points([
+        (0,18),
+        (0.45,16.6),
+        (0,16.9),
+        (-0.45,16.6),
+    ])
     ui.polygon(points, fill=(255,0,0,255))
 
 stars = {}
@@ -126,7 +74,7 @@ with open(STARS, 'r', newline='') as csvfile:
         star = Star.from_dict(star)
         stars[star.name] = star
 
-        pos = projection(*star.coords)
+        pos = projection.point(*star.coords)
         bounds = [
             (pos[0]-5, pos[1]-5),
             (pos[0]+5, pos[1]+5),
@@ -185,7 +133,7 @@ with open(ROUTES, 'r', newline='') as csvfile:
         elif route['Owner'] == 'Green':
             color = (136,255,136,136)
 
-        routes.line([projection(*a.coords), projection(*b.coords)], color, width=1)
+        routes.line([projection.point(*a.coords), projection.point(*b.coords)], color, width=1)
 
 out = Image.alpha_composite(img, overlay)
 out.save(MAP)
