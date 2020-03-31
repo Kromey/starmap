@@ -44,7 +44,7 @@ with open(ROUTES, 'r', newline='') as csvfile:
 
 frames = []
 
-for i in range(360):
+for i in range(0, 360, 3):
     projection.set_rotation(z=-i)
 
     img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
@@ -78,6 +78,6 @@ for i in range(360):
     frame = Image.alpha_composite(img, overlay)
     frames.append(frame)
 
-frames[0].save('starmap.gif', save_all=True, append_images=frames[1:], optimize=True, duration=15, loop=0)
+frames[0].save('starmap.gif', save_all=True, append_images=frames[1:], optimize=True, duration=100, loop=0)
 
 
