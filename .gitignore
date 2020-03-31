@@ -1,3 +1,6 @@
+# Ignore lock files
+.~lock.*
+
 # Ignore generated files
 routes.csv
 *.png
