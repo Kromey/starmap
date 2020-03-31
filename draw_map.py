@@ -23,48 +23,61 @@ plotter = Star(projection)
 IMG_SIZE = (MAP_PC[0]*MAP_SCALE, MAP_PC[1]*MAP_SCALE)
 
 galaxy = Galaxy.from_file(STARS)
-
-img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
-
-starmap = ImageDraw.Draw(img)
-
-# Draw neg-z stars:
-for star in galaxy:
-    if star.coords[2] >= 0:
-        continue
-
-    starmap.ellipse(plotter.ellipse(star), fill=plotter.fill_color(star), outline=plotter.color(star), width=1)
-
-# Now draw UI "on top of" neg-z stars
-ui.draw(img)
-
-# Draw pos-z stars:
-for star in galaxy:
-    if star.coords[2] < 0:
-        continue
-
-    starmap.ellipse(plotter.ellipse(star), fill=plotter.fill_color(star), outline=plotter.color(star), width=1)
-
-
-overlay = Image.new('RGBA', img.size, (255,255,255,0))
-routes = ImageDraw.Draw(overlay)
-
 stars = {star.name:star for star in galaxy}
 
+routes = []
 with open(ROUTES, 'r', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
 
     for route in reader:
-        a = stars[route['A']]
-        b = stars[route['B']]
+        route['A'] = stars[route['A']]
+        route['B'] = stars[route['B']]
 
         if route['Owner'] == 'Red':
             color = (255,136,136,136)
         elif route['Owner'] == 'Green':
             color = (136,255,136,136)
 
-        routes.line([projection.point(*a.coords), projection.point(*b.coords)], color, width=1)
+        route['color'] = color
 
-out = Image.alpha_composite(img, overlay)
-out.save(MAP)
+        routes.append(route)
+
+frames = []
+
+for i in range(360):
+    projection.set_rotation(z=-i)
+
+    img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
+
+    starmap = ImageDraw.Draw(img)
+
+    # Draw neg-z stars:
+    for star in galaxy:
+        if star.coords[2] >= 0:
+            continue
+
+        starmap.ellipse(plotter.ellipse(star), fill=plotter.fill_color(star), outline=plotter.color(star), width=1)
+
+    # Now draw UI "on top of" neg-z stars
+    ui.draw(img)
+
+    # Draw pos-z stars:
+    for star in galaxy:
+        if star.coords[2] < 0:
+            continue
+
+        starmap.ellipse(plotter.ellipse(star), fill=plotter.fill_color(star), outline=plotter.color(star), width=1)
+
+
+    overlay = Image.new('RGBA', img.size, (255,255,255,0))
+
+    overlay_routes = ImageDraw.Draw(overlay)
+    for route in routes:
+        overlay_routes.line(projection.points([route['A'].coords, route['B'].coords]), route['color'], width=1)
+
+    frame = Image.alpha_composite(img, overlay)
+    frames.append(frame)
+
+frames[0].save('starmap.gif', save_all=True, append_images=frames[1:], optimize=True, duration=15, loop=0)
+
 
