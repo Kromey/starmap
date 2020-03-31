@@ -15,7 +15,7 @@ MAP = 'map.png'
 # Dimensions of map in parsecs
 MAP_PC = (36,36)
 # Map scale in pixels/parsec
-MAP_SCALE = 40
+MAP_SCALE = 20
 
 projection = Projection(MAP_PC, MAP_SCALE, 75, 80)
 ui = UI(projection)
@@ -43,8 +43,8 @@ with open(STARS, 'r', newline='') as csvfile:
 
         pos = projection.point(*star.coords)
         bounds = [
-            (pos[0]-5, pos[1]-5),
-            (pos[0]+5, pos[1]+5),
+            (pos[0]-2, pos[1]-2),
+            (pos[0]+2, pos[1]+2),
         ]
 
         if star.name == 'Sol':
@@ -75,14 +75,14 @@ starmap = ImageDraw.Draw(img)
 
 # Draw neg-z stars:
 for star in queue['stars']['negz']:
-    starmap.ellipse(star[0], fill=star[1], outline=star[2], width=2)
+    starmap.ellipse(star[0], fill=star[1], outline=star[2], width=1)
 
 # Now draw UI "on top of" neg-z stars
 ui.draw(img)
 
 # Draw pos-z stars:
 for star in queue['stars']['posz']:
-    starmap.ellipse(star[0], fill=star[1], outline=star[2], width=2)
+    starmap.ellipse(star[0], fill=star[1], outline=star[2], width=1)
 
 
 overlay = Image.new('RGBA', img.size, (255,255,255,0))
