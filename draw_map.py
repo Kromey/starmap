@@ -1,4 +1,5 @@
 import csv
+import os
 from PIL import Image, ImageDraw
 
 
@@ -42,10 +43,22 @@ with open(ROUTES, 'r', newline='') as csvfile:
 
         routes.append(route)
 
-frames = []
+os.makedirs('frames', exist_ok=True)
+frame_counter = 0
+total_frames = 720
+rotation_factor = 360/total_frames
 
-for i in range(0, 360, 3):
-    projection.set_rotation(z=-i)
+print('Exporting frames:')
+for i in range(720):
+    pct = round(10 * (i/total_frames))
+    print('\r[{bar}{empty}] {frames}/{total}'.format(
+        bar='#'*pct,
+        empty='.'*(10-pct),
+        frames=frame_counter+1,
+        total=total_frames,
+    ), end='')
+
+    projection.set_rotation(z=-i*rotation_factor)
 
     img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
 
@@ -76,8 +89,10 @@ for i in range(0, 360, 3):
         overlay_routes.line(projection.points([route['A'].coords, route['B'].coords]), route['color'], width=1)
 
     frame = Image.alpha_composite(img, overlay)
-    frames.append(frame)
+    frame.save('frames/frame-{:03}.png'.format(frame_counter))
+    frame_counter += 1
 
-frames[0].save('starmap.gif', save_all=True, append_images=frames[1:], optimize=True, duration=100, loop=0)
 
+print()
+print('All frames exported!')
 
