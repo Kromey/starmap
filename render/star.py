@@ -1,4 +1,6 @@
 class Star:
+    STAR_ALPHA = 127
+
     def __init__(self, projection):
         self.projection = projection
 
@@ -11,17 +13,17 @@ class Star:
 
     def color(self, star):
         if star.name == 'Sol':
-            color = (0,255,0,255)
+            color = (0,255,0,Star.STAR_ALPHA)
         elif star.name == 'Gl 447':
-            color = (0,136,255,255)
+            color = (0,136,255,Star.STAR_ALPHA)
         elif star.name == 'Gl 46':
-            color = (255,0,0,255)
+            color = (255,0,0,Star.STAR_ALPHA)
         elif star.name == 'NN 4013':
-            color = (255,0,255,255)
+            color = (255,0,255,Star.STAR_ALPHA)
         elif star.name == 'NN 4219':
-            color = (255,255,0,255)
+            color = (255,255,0,Star.STAR_ALPHA)
         else:
-            color = (170,170,170,255)
+            color = (170,170,170,Star.STAR_ALPHA)
 
         return color
 
@@ -29,5 +31,5 @@ class Star:
         if star.is_habitable:
             return self.color(star)
         else:
-            return (0,0,0,255)
+            return (0,0,0,Star.STAR_ALPHA)
 

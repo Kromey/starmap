@@ -27,6 +27,7 @@ galaxy = Galaxy.from_file(STARS)
 stars = {star.name:star for star in galaxy}
 
 routes = []
+ROUTE_ALPHA = 255
 with open(ROUTES, 'r', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
 
@@ -35,9 +36,9 @@ with open(ROUTES, 'r', newline='') as csvfile:
         route['B'] = stars[route['B']]
 
         if route['Owner'] == 'Red':
-            color = (255,136,136,136)
+            color = (255,136,136,ROUTE_ALPHA)
         elif route['Owner'] == 'Green':
-            color = (136,255,136,136)
+            color = (136,255,136,ROUTE_ALPHA)
 
         route['color'] = color
 
@@ -62,25 +63,29 @@ for i in range(720):
 
     img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
 
-    starmap = ImageDraw.Draw(img)
+    stars_south = Image.new('RGBA', img.size, (0,0,0,0))
+    stars_north = Image.new('RGBA', img.size, (0,0,0,0))
 
-    # Draw neg-z stars:
+    south = ImageDraw.Draw(stars_south)
+    north = ImageDraw.Draw(stars_north)
+
+    # Draw stars:
     for star in galaxy:
         if star.coords[2] >= 0:
-            continue
+            starmap = north
+        else:
+            starmap = south
 
         starmap.ellipse(plotter.ellipse(star), fill=plotter.fill_color(star), outline=plotter.color(star), width=1)
 
-    # Now draw UI "on top of" neg-z stars
-    ui.draw(img)
+    # Draw UI
+    ui_overlay = Image.new('RGBA', img.size, (0,0,0,0))
+    ui.draw(ui_overlay)
 
-    # Draw pos-z stars:
-    for star in galaxy:
-        if star.coords[2] < 0:
-            continue
-
-        starmap.ellipse(plotter.ellipse(star), fill=plotter.fill_color(star), outline=plotter.color(star), width=1)
-
+    # Blend stars and UI
+    img = Image.alpha_composite(img, stars_south)
+    img = Image.alpha_composite(img, ui_overlay)
+    img = Image.alpha_composite(img, stars_north)
 
     overlay = Image.new('RGBA', img.size, (255,255,255,0))
 
