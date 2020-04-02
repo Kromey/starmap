@@ -3,6 +3,7 @@
 
 # Ignore generated files
 routes.csv
+route_history.json
 *.png
 *.gif
 *.mp4

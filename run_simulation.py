@@ -17,9 +17,21 @@ networks = []
 for corp in corps:
     networks.append(HyperspaceNetwork(corp, galaxy))
 
+history = []
 for i in range(STEPS):
+    routes = []
     for n in networks:
-        n.explore()
+        r = n.explore()
+        if r:
+            r = r.as_dict()
+            r['owner'] = n.owner.short
+            routes.append(r)
+
+    if routes:
+        history.append([i, routes])
+
+with open('route_history.json', 'w') as fh:
+    json.dump(history, fh)
 
 print('Found {routes} routes connecting {stars} stars'.format(
     routes=sum([len(list(n.routes)) for n in networks]),

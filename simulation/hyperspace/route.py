@@ -5,6 +5,14 @@ class HyperspaceRoute:
         self.__ab = ab
         self.__ba = ba
 
+    def as_dict(self):
+        return {
+            'a': self.a.name,
+            'b': self.b.name,
+            'ab': self.ab,
+            'ba': self.ba,
+        }
+
     def update(self, other):
         if self.a == other.a and self.b == other.b:
             if other.ab < self.ab:
