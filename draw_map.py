@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw
 
 
 from render import Projection, Star, UI
-from simulation import Galaxy
+from simulation import CorpLoader,Galaxy
 
 
 STARS = 'HabHyg_local.csv'
@@ -26,6 +26,9 @@ IMG_SIZE = (MAP_PC[0]*MAP_SCALE, MAP_PC[1]*MAP_SCALE)
 galaxy = Galaxy.from_file(STARS)
 stars = {star.name:star for star in galaxy}
 
+corps = CorpLoader.from_json('corps.json')
+corps = {corp.short:corp for corp in corps}
+
 routes = []
 ROUTE_ALPHA = 255
 with open(ROUTES, 'r', newline='') as csvfile:
@@ -35,12 +38,7 @@ with open(ROUTES, 'r', newline='') as csvfile:
         route['A'] = stars[route['A']]
         route['B'] = stars[route['B']]
 
-        if route['Owner'] == 'Red':
-            color = (255,136,136,ROUTE_ALPHA)
-        elif route['Owner'] == 'Green':
-            color = (136,255,136,ROUTE_ALPHA)
-
-        route['color'] = color
+        route['color'] = corps[route['Owner']].color + (ROUTE_ALPHA,)
 
         routes.append(route)
 

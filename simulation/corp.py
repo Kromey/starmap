@@ -13,7 +13,7 @@ class CorpLoader:
 class Corp:
     def __init__(self, name, color, short_name=None):
         self.name = name
-        self.color = color
+        self.color = tuple(color)
 
         self.short = short_name or Corp.shorten(name)
 
