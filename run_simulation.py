@@ -1,21 +1,21 @@
 import csv
+import json
 import random
 
 
-from simulation import HyperspaceNetwork,Galaxy
+from simulation import HyperspaceNetwork,Galaxy,CorpLoader
 
 
 STARS = 'HabHyg_local.csv'
-PROB_PER_STEP = 0.40
 STEPS = 120
 
 galaxy = Galaxy.from_file(STARS)
 
-network = HyperspaceNetwork(galaxy)
+corps = CorpLoader.from_json('corps.json')
 
-network2 = HyperspaceNetwork(galaxy, min_agents=2)
-
-networks = [network,network2]
+networks = []
+for corp in corps:
+    networks.append(HyperspaceNetwork(corp, galaxy))
 
 for i in range(STEPS):
     for n in networks:
@@ -33,24 +33,15 @@ with open('routes.csv', 'w', newline='') as csvfile:
 
     writer.writeheader()
 
-    for route in network.routes:
-        writer.writerow({
-            'Owner': 'Red',
-            'A': route.a.name,
-            'B': route.b.name,
-            'Distance': route.dist,
-            'AB': route.ab,
-            'BA': route.ba,
-        })
-
-    for route in network2.routes:
-        writer.writerow({
-            'Owner': 'Green',
-            'A': route.a.name,
-            'B': route.b.name,
-            'Distance': route.dist,
-            'AB': route.ab,
-            'BA': route.ba,
-        })
+    for network in networks:
+        for route in network.routes:
+            writer.writerow({
+                'Owner': network.owner.short,
+                'A': route.a.name,
+                'B': route.b.name,
+                'Distance': route.dist,
+                'AB': route.ab,
+                'BA': route.ba,
+            })
 
 

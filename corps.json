@@ -1,0 +1,20 @@
+[
+	{
+		"name": "Halcyon Logistics Services",
+		"color": [255,136,136]
+	},
+	{
+		"name": "Procyon LLC",
+		"short_name": "PROC",
+		"color": [136,255,136]
+	},
+	{
+		"name": "Transstellar Group",
+		"short_name": "TSG",
+		"color": [136,136,255]
+	},
+	{
+		"name": "InterStellar Shipping Alliance",
+		"color": [255,255,136]
+	}
+]

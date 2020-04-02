@@ -7,7 +7,8 @@ from simulation.hyperspace.route import HyperspaceRoute
 
 
 class HyperspaceNetwork:
-    def __init__(self, galaxy, max_dist=5.3, min_agents=1):
+    def __init__(self, owner, galaxy, max_dist=5.3, min_agents=1):
+        self.__owner = owner
         self.__galaxy = galaxy
         self.__routes = []
         self.__explored = set()
@@ -47,6 +48,10 @@ class HyperspaceNetwork:
         exp.position = stars[math.floor(abs(random.random() - random.random()) * len(stars))]
 
         self.__explorers.append(exp)
+
+    @property
+    def owner(self):
+        return self.__owner
 
     @property
     def routes(self):
