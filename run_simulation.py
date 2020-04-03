@@ -21,11 +21,12 @@ history = []
 for i in range(STEPS):
     routes = []
     for n in networks:
-        r = n.explore()
-        if r:
-            r = r.as_dict()
-            r['owner'] = n.owner.short
-            routes.append(r)
+        new = n.explore()
+        if new:
+            for r in new:
+                r = r.as_dict()
+                r['owner'] = n.owner.short
+                routes.append(r)
 
     if routes:
         history.append([i, routes])

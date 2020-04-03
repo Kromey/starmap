@@ -31,16 +31,17 @@ class HyperspaceNetwork:
         if random.random() < 0.05:
             self.spawn_explorer()
 
-        route = None
+        routes = []
         for exp in self.__explorers:
             route = exp.explore()
 
             if route is not None:
+                routes.append(route)
                 self._add_route(route)
 
         self.__explorers = [exp for exp in self.__explorers if exp.is_alive]
 
-        return route
+        return routes or None
 
     def spawn_explorer(self):
         exp = Explorer(self.__galaxy, max_dist = self.max_dist)
