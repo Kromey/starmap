@@ -33,21 +33,21 @@ corps = {corp.short:corp for corp in corps}
 with open('route_history.json','r') as fh:
     history = json.load(fh)
 
-ROUTE_ALPHA = 255
 for time,routes in history:
     for route in routes:
         route['a'] = stars[route['a']]
         route['b'] = stars[route['b']]
 
-        route['color'] = corps[route['owner']].color + (ROUTE_ALPHA,)
+        route['color'] = corps[route['owner']].color
 
 os.makedirs('frames', exist_ok=True)
 frame_counter = 0
 total_frames = 720
 rotation_factor = 360/total_frames
+frames_per_step = 5
 
 print('Exporting frames:')
-for i in range(720):
+for i in range(total_frames):
     pct = round(10 * (i/total_frames))
     print('\r[{bar}{empty}] {frames}/{total}'.format(
         bar='#'*pct,
@@ -86,12 +86,25 @@ for i in range(720):
 
     overlay = Image.new('RGBA', img.size, (255,255,255,0))
 
-    time = i // 5
+    time = i // frames_per_step
     overlay_routes = ImageDraw.Draw(overlay)
     for t,routes in history:
         if t <= time:
+            age = i - t * frames_per_step
+
             for route in routes:
-                overlay_routes.line(projection.points([route['a'].coords, route['b'].coords]), route['color'], width=1)
+                if t >= time-1:
+                    overlay_routes.line(
+                        projection.points([route['a'].coords, route['b'].coords]),
+                        route['color'] + (64-age*6,),
+                        width=5,
+                    )
+
+                overlay_routes.line(
+                    projection.points([route['a'].coords, route['b'].coords]),
+                    route['color'] + (255,),
+                    width=1,
+                )
 
     frame = Image.alpha_composite(img, overlay)
     frame.save('frames/frame-{:03}.png'.format(frame_counter))
