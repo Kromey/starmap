@@ -92,13 +92,16 @@ for i in range(total_frames):
         if t <= time:
             age = i - t * frames_per_step
 
+            flare_alpha = 256 - (128+64)*(age/10)
+
             for route in routes:
                 if t >= time-1:
-                    overlay_routes.line(
-                        projection.points([route['a'].coords, route['b'].coords]),
-                        route['color'] + (64-age*6,),
-                        width=5,
-                    )
+                    for flare_size in range(5,0,-1):
+                        overlay_routes.line(
+                            projection.points([route['a'].coords, route['b'].coords]),
+                            route['color'] + (round(flare_alpha / (2 ** flare_size)),),
+                            width=flare_size*2 + 1,
+                        )
 
                 overlay_routes.line(
                     projection.points([route['a'].coords, route['b'].coords]),
