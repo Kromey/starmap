@@ -85,9 +85,11 @@ for i in range(total_frames):
     img = Image.alpha_composite(img, stars_north)
 
     overlay = Image.new('RGBA', img.size, (255,255,255,0))
+    flares = Image.new('RGBA', img.size, (255,255,255,0))
 
     time = i // frames_per_step
     overlay_routes = ImageDraw.Draw(overlay)
+    flare_draw = ImageDraw.Draw(flares)
     for t,routes in history:
         if t <= time:
             age = i - t * frames_per_step
@@ -97,7 +99,7 @@ for i in range(total_frames):
             for route in routes:
                 if t >= time-1:
                     for flare_size in range(5,0,-1):
-                        overlay_routes.line(
+                        flare_draw.line(
                             projection.points([route['a'].coords, route['b'].coords]),
                             route['color'] + (round(flare_alpha / (2 ** flare_size)),),
                             width=flare_size*2 + 1,
@@ -109,8 +111,9 @@ for i in range(total_frames):
                     width=1,
                 )
 
-    frame = Image.alpha_composite(img, overlay)
-    frame.save('frames/frame-{:03}.png'.format(frame_counter))
+    img = Image.alpha_composite(img, flares)
+    img = Image.alpha_composite(img, overlay)
+    img.save('frames/frame-{:03}.png'.format(frame_counter))
     frame_counter += 1
 
 
