@@ -1,4 +1,5 @@
 import csv
+import json
 import os
 from PIL import Image, ImageDraw
 
@@ -29,18 +30,16 @@ stars = {star.name:star for star in galaxy}
 corps = CorpLoader.from_json('corps.json')
 corps = {corp.short:corp for corp in corps}
 
-routes = []
+with open('route_history.json','r') as fh:
+    history = json.load(fh)
+
 ROUTE_ALPHA = 255
-with open(ROUTES, 'r', newline='') as csvfile:
-    reader = csv.DictReader(csvfile)
+for time,routes in history:
+    for route in routes:
+        route['a'] = stars[route['a']]
+        route['b'] = stars[route['b']]
 
-    for route in reader:
-        route['A'] = stars[route['A']]
-        route['B'] = stars[route['B']]
-
-        route['color'] = corps[route['Owner']].color + (ROUTE_ALPHA,)
-
-        routes.append(route)
+        route['color'] = corps[route['owner']].color + (ROUTE_ALPHA,)
 
 os.makedirs('frames', exist_ok=True)
 frame_counter = 0
@@ -87,9 +86,12 @@ for i in range(720):
 
     overlay = Image.new('RGBA', img.size, (255,255,255,0))
 
+    time = i // 5
     overlay_routes = ImageDraw.Draw(overlay)
-    for route in routes:
-        overlay_routes.line(projection.points([route['A'].coords, route['B'].coords]), route['color'], width=1)
+    for t,routes in history:
+        if t <= time:
+            for route in routes:
+                overlay_routes.line(projection.points([route['a'].coords, route['b'].coords]), route['color'], width=1)
 
     frame = Image.alpha_composite(img, overlay)
     frame.save('frames/frame-{:03}.png'.format(frame_counter))
