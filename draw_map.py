@@ -42,9 +42,9 @@ for time,routes in history:
 
 os.makedirs('frames', exist_ok=True)
 frame_counter = 0
-total_frames = 720
+total_frames = 1080
 rotation_factor = 360/total_frames
-frames_per_step = 5
+frames_per_step = 8
 
 print('Exporting frames:')
 for i in range(total_frames):
