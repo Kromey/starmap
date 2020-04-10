@@ -41,10 +41,14 @@ for time,routes in history:
         route['color'] = corps[route['owner']].color
 
 os.makedirs('frames', exist_ok=True)
-frame_counter = 0
-total_frames = 1080
-rotation_factor = 360/total_frames
-frames_per_step = 8
+
+frames_per_degree = 3
+steps = 120
+step_padding = 2
+
+total_steps = steps + step_padding*2
+total_frames = frames_per_degree * 360
+frames_per_step = total_frames // total_steps
 
 print('Exporting frames:')
 for i in range(total_frames):
@@ -52,11 +56,11 @@ for i in range(total_frames):
     print('\r[{bar}{empty}] {frames}/{total}'.format(
         bar='#'*pct,
         empty='.'*(10-pct),
-        frames=frame_counter+1,
+        frames=i+1,
         total=total_frames,
     ), end='')
 
-    projection.set_rotation(z=-i*rotation_factor)
+    projection.set_rotation(z=-i/frames_per_degree)
 
     img = Image.new('RGBA', IMG_SIZE, (0,0,0,255))
 
@@ -113,8 +117,7 @@ for i in range(total_frames):
 
     img = Image.alpha_composite(img, flares)
     img = Image.alpha_composite(img, overlay)
-    img.save('frames/frame-{:03}.png'.format(frame_counter))
-    frame_counter += 1
+    img.save('frames/frame-{:03}.png'.format(i))
 
 
 print()
