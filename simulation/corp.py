@@ -3,7 +3,7 @@ import math
 import random
 
 
-from simulation.hyperspace.explorer import Explorer
+from simulation.explorer import Explorer
 
 
 class CorpLoader:

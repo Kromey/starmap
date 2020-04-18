@@ -2,9 +2,6 @@ import math
 import random
 
 
-from simulation.hyperspace.route import HyperspaceRoute
-
-
 class Explorer:
     def __init__(self, corp, discovery_odds=0.2, max_dist=5.3):
         self.corp = corp
