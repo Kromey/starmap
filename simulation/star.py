@@ -1,3 +1,4 @@
+from collections import namedtuple
 from collections.abc import MutableSequence
 import csv
 import math
@@ -28,6 +29,23 @@ class Galaxy(MutableSequence):
 
         return g
 
+    def known_to(self, corp):
+        try:
+            corp = corp.short
+        except AttributeError:
+            # Assume we were given a short name instead of an object
+            pass
+
+        for star in self:
+            if star.name == 'Sol':
+                yield star
+                continue
+
+            for route in star.routes:
+                if route.owner.short == corp:
+                    yield star
+                    break
+
     def __getitem__(self, i):
         return self.__stars[i]
 
@@ -44,6 +62,18 @@ class Galaxy(MutableSequence):
         return len(self.__stars)
 
 
+class Route:
+    def __init__(self, owner, to, time):
+        self.owner = owner
+        self.to = to
+        self.time = time
+
+    def update(self, owner, to, time):
+        if self.owner != owner or self.to != to:
+            raise ValueError('Route Mismatch!')
+
+        self.time = min(self.time, time)
+
 class Star:
     def __init__(self, name, is_habitable, spectral_class, absmag, coords):
         self.__name = name
@@ -51,6 +81,8 @@ class Star:
         self.__spectral_class = spectral_class
         self.__absmag = absmag
         self.__coords = coords
+
+        self.__routes = []
 
     @classmethod
     def from_dict(cls, data):
@@ -78,6 +110,17 @@ class Star:
 
         return math.sqrt(s)
 
+    def add_route(self, corp, to, time):
+        for route in self.routes:
+            try:
+                route.update(corp, to, time)
+                print('\tUpdated route!')
+                return
+            except ValueError:
+                pass
+
+        self.__routes.append(Route(corp, to, time))
+
     @property
     def name(self):
         return self.__name
@@ -97,6 +140,17 @@ class Star:
     @property
     def coords(self):
         return self.__coords
+
+    @property
+    def routes(self):
+        for route in self.__routes:
+            yield route
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return 'Star<{}>'.format(str(self))
 
     def __hash__(self):
         return hash((self.name, self.coords))

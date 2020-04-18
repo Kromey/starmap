@@ -6,13 +6,12 @@ from simulation.hyperspace.route import HyperspaceRoute
 
 
 class Explorer:
-    def __init__(self, galaxy, discovery_odds=0.2, max_dist=5.3):
-        self.__galaxy = galaxy
-        self.__odds = discovery_odds
-
+    def __init__(self, corp, discovery_odds=0.2, max_dist=5.3):
+        self.corp = corp
         self.max_dist = max_dist
-        self.position = galaxy[0]
+        self.position = corp.galaxy[0]
 
+        self.__odds = discovery_odds
         self.__discoveries = 0
 
     def explore(self):
@@ -27,7 +26,8 @@ class Explorer:
             ab = d * (1 + random.random() - random.random())
             ba = d * (1 + random.random() - random.random())
 
-            print('Yay! Got one! From: {sn}; To: {en}; Distance: {d}; AB: {ab}; BA: {ba}'.format(
+            print('{corp}: From: {sn}; To: {en}; Distance: {d}; AB: {ab}; BA: {ba}'.format(
+                corp=self.corp,
                 sn=self.position.name,
                 en=other.name,
                 d=d,
@@ -35,7 +35,17 @@ class Explorer:
                 ba=ba,
             ))
 
-            route = HyperspaceRoute(self.position, other, ab, ba)
+            self.position.add_route(self.corp, other, ab)
+            other.add_route(self.corp, self.position, ba)
+
+            route = {
+                'corp': self.corp.short,
+                'from': self.position.name,
+                'to': other.name,
+                'time_to': ab,
+                'time_from': ba,
+            }
+
             self.position = other
 
             return route
@@ -53,7 +63,7 @@ class Explorer:
     def _get_neighbors(self):
         neighbors = []
 
-        for other in self.__galaxy:
+        for other in self.corp.galaxy:
             d = self.position.dist(other)
 
             if d > 0 and d < self.max_dist:
