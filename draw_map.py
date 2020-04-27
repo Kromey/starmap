@@ -8,8 +8,7 @@ from render import Projection, Star, UI
 from simulation import CorpLoader,Galaxy
 
 
-STARS = 'HabHyg_local.csv'
-ROUTES = 'routes.csv'
+STARS = 'data/HabHyg_local.csv'
 MAP = 'map.png'
 
 # Dimensions of map in parsecs
@@ -27,10 +26,10 @@ IMG_SIZE = (MAP_PC[0]*MAP_SCALE, MAP_PC[1]*MAP_SCALE)
 galaxy = Galaxy.from_file(STARS)
 stars = {star.name:star for star in galaxy}
 
-corps = CorpLoader.from_json('corps.json')
+corps = CorpLoader.from_json('data/corps.json', galaxy)
 corps = {corp.short:corp for corp in corps}
 
-with open('route_history.json','r') as fh:
+with open('data/route_history.json','r') as fh:
     history = json.load(fh)
 
 for time,routes in history:

@@ -6,12 +6,12 @@ import random
 from simulation import Galaxy,CorpLoader
 
 
-STARS = 'HabHyg_local.csv'
+STARS = 'data/HabHyg_local.csv'
 STEPS = 120
 
 galaxy = Galaxy.from_file(STARS)
 
-corps = CorpLoader.from_json('corps.json', galaxy)
+corps = CorpLoader.from_json('data/corps.json', galaxy)
 
 history = []
 for i in range(STEPS):
@@ -23,7 +23,7 @@ for i in range(STEPS):
     if routes:
         history.append([i, routes])
 
-with open('route_history.json', 'w') as fh:
+with open('data/route_history.json', 'w') as fh:
     json.dump(history, fh, indent=2)
 
 print('Found {routes} routes connecting {stars} (or {stars2}) stars'.format(
