@@ -12,7 +12,7 @@ fn main() {
         let star: Star = result.unwrap();
         total += 1;
 
-        let dist = (star.xg.powi(2) + star.yg.powi(2) + star.zg.powi(2)).sqrt();
+        let dist = (star.x.powi(2) + star.y.powi(2) + star.z.powi(2)).sqrt();
 
         if dist < 17f32 {
             neighbors += 1;

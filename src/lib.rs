@@ -15,11 +15,11 @@ pub struct Star {
     #[serde(alias = "AbsMag")]
     pub abs_mag: f32,
     #[serde(alias = "Xg")]
-    pub xg: f32,
+    pub x: f32,
     #[serde(alias = "Yg")]
-    pub yg: f32,
+    pub y: f32,
     #[serde(alias = "Zg")]
-    pub zg: f32,
+    pub z: f32,
 }
 
 fn is_habitable<'de, D>(deserializer: D) -> Result<bool, D::Error>
