@@ -5,20 +5,20 @@ use serde::de::{self, Deserializer, Unexpected};
 
 #[derive(Debug, Deserialize)]
 pub struct Star {
-    #[serde(rename(deserialize = "Display Name"))]
+    #[serde(alias = "Display Name")]
     pub name: String,
-    #[serde(rename(deserialize = "Hab?"))]
+    #[serde(alias = "Hab?")]
     #[serde(deserialize_with = "is_habitable")]
     pub is_habitable: bool,
-    #[serde(rename(deserialize = "Spectral Class"))]
+    #[serde(alias = "Spectral Class")]
     pub spectral_class: String,
-    #[serde(rename(deserialize = "AbsMag"))]
+    #[serde(alias = "AbsMag")]
     pub abs_mag: f32,
-    #[serde(rename(deserialize = "Xg"))]
+    #[serde(alias = "Xg")]
     pub xg: f32,
-    #[serde(rename(deserialize = "Yg"))]
+    #[serde(alias = "Yg")]
     pub yg: f32,
-    #[serde(rename(deserialize = "Zg"))]
+    #[serde(alias = "Zg")]
     pub zg: f32,
 }
 
