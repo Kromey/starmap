@@ -1,37 +1,36 @@
-use serde::Deserialize;
+mod catalog;
 
-use serde::de::{self, Deserializer, Unexpected};
+pub use catalog::Record;
 
-
-#[derive(Debug, Deserialize)]
-pub struct Star {
-    #[serde(alias = "Display Name")]
-    pub name: String,
-    #[serde(alias = "Hab?")]
-    #[serde(deserialize_with = "is_habitable")]
-    pub is_habitable: bool,
-    #[serde(alias = "Spectral Class")]
-    pub spectral_class: String,
-    #[serde(alias = "AbsMag")]
-    pub abs_mag: f32,
-    #[serde(alias = "Xg")]
+#[derive(Debug)]
+pub struct Point3d {
     pub x: f32,
-    #[serde(alias = "Yg")]
     pub y: f32,
-    #[serde(alias = "Zg")]
     pub z: f32,
 }
 
-fn is_habitable<'de, D>(deserializer: D) -> Result<bool, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    match Option::deserialize(deserializer).unwrap() {
-        None => Ok(false),
-        Some("1") => Ok(true),
-        Some(other) => Err(de::Error::invalid_value(
-            Unexpected::Str(other),
-            &"zero or one",
-        )),
+#[derive(Debug)]
+pub struct Star {
+    pub name: String,
+    pub is_habitable: bool,
+    pub spectral_class: String,
+    pub abs_mag: f32,
+    pub coords: Point3d,
+}
+
+impl From<Record> for Star {
+    fn from(record: Record) -> Self {
+        Star {
+            is_habitable: record.name == "1",
+            name: record.name,
+            spectral_class: record.spectral_class,
+            abs_mag: record.abs_mag,
+
+            coords: Point3d {
+                x: record.x,
+                y: record.y,
+                z: record.z,
+            },
+        }
     }
 }

@@ -1,4 +1,4 @@
-use hyperspace::Star;
+use hyperspace::{Record, Star};
 
 
 fn main() {
@@ -9,10 +9,11 @@ fn main() {
 
     let mut rdr = csv::Reader::from_path("data/HabHyg.csv").unwrap();
     for result in rdr.deserialize() {
-        let star: Star = result.unwrap();
+        let record: Record = result.unwrap();
+        let star = Star::from(record);
         total += 1;
 
-        let dist = (star.x.powi(2) + star.y.powi(2) + star.z.powi(2)).sqrt();
+        let dist = (star.coords.x.powi(2) + star.coords.y.powi(2) + star.coords.z.powi(2)).sqrt();
 
         if dist < 17f32 {
             neighbors += 1;
