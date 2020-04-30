@@ -1,8 +1,8 @@
 import csv
 
 
-IN = 'HabHyg.csv'
-OUT = 'HabHyg_local.csv'
+IN = 'data/HabHyg.csv'
+OUT = 'data/HabHyg_local.csv'
 RANGE = 16.999
 
 
