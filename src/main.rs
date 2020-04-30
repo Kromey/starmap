@@ -8,9 +8,8 @@ fn main() {
     let mut total = 0;
 
     let mut rdr = csv::Reader::from_path("data/HabHyg.csv").unwrap();
-    for result in rdr.deserialize() {
-        let record: Record = result.unwrap();
-        let star = Star::from(record);
+    for result in rdr.deserialize::<Record>() {
+        let star = Star::from(result.unwrap());
         total += 1;
 
         let dist = (star.coords.x.powi(2) + star.coords.y.powi(2) + star.coords.z.powi(2)).sqrt();
