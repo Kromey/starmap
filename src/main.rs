@@ -4,8 +4,6 @@ use hyperspace::{Record, Star, Point3d};
 fn main() {
     println!("Hello, world!");
 
-    let mut total = 0;
-
     let sol = Point3d {
         x: 0.0,
         y: 0.0,
@@ -15,11 +13,11 @@ fn main() {
     let galaxy: Vec<_> = csv::Reader::from_path("data/HabHyg.csv")
         .unwrap()
         .deserialize::<Record>()
-        .map(|record| { total += 1; Star::from(record.unwrap()) })
+        .map(|record| Star::from(record.unwrap()))
         .filter(|star| star.coords.distance(&sol) < 17f32)
         .collect();
 
     let neighbors = galaxy.len();
 
-    println!("{} nearby stars out of {}", neighbors, total);
+    println!("{} nearby stars", neighbors);
 }
