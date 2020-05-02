@@ -1,9 +1,7 @@
 mod catalog;
 
-
-use catalog::Record;
 use super::Point3d;
-
+use catalog::Record;
 
 pub fn from_path(path: &str) -> Vec<Star> {
     let sol = Point3d {
@@ -19,7 +17,6 @@ pub fn from_path(path: &str) -> Vec<Star> {
         .filter(|star| star.coords.distance(&sol) < 17f32)
         .collect()
 }
-
 
 #[derive(Debug)]
 pub struct Star {
@@ -46,4 +43,3 @@ impl From<Record> for Star {
         }
     }
 }
-

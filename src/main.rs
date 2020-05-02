@@ -1,6 +1,5 @@
 use hyperspace::galaxy;
 
-
 fn main() {
     println!("Hello, world!");
 
