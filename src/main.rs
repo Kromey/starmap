@@ -1,23 +1,12 @@
-use hyperspace::{Record, Star, Point3d};
+use hyperspace::galaxy;
 
 
 fn main() {
     println!("Hello, world!");
 
-    let sol = Point3d {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-    };
+    let my_galaxy = galaxy::from_path("data/HabHyg.csv");
 
-    let galaxy: Vec<_> = csv::Reader::from_path("data/HabHyg.csv")
-        .unwrap()
-        .deserialize::<Record>()
-        .map(|record| Star::from(record.unwrap()))
-        .filter(|star| star.coords.distance(&sol) < 17f32)
-        .collect();
-
-    let neighbors = galaxy.len();
+    let neighbors = my_galaxy.len();
 
     println!("{} nearby stars", neighbors);
 }
