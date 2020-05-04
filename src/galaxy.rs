@@ -2,20 +2,20 @@ mod catalog;
 
 use super::Point3d;
 use catalog::Record;
+use std::error::Error;
 
-pub fn from_path(path: &str) -> Vec<Star> {
+pub fn from_path(path: &str) -> Result<Vec<Star>, Box<dyn Error>> {
     let sol = Point3d {
         x: 0.0,
         y: 0.0,
         z: 0.0,
     };
 
-    csv::Reader::from_path(path)
-        .unwrap()
+    Ok(csv::Reader::from_path(path)?
         .deserialize::<Record>()
         .map(|record| Star::from(record.unwrap()))
         .filter(|star| star.coords.distance(&sol) < 17f32)
-        .collect()
+        .collect())
 }
 
 #[derive(Debug)]
