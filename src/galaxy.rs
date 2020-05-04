@@ -13,7 +13,7 @@ pub fn from_path(path: &str) -> Result<Vec<Star>, Box<dyn Error>> {
 
     Ok(csv::Reader::from_path(path)?
         .deserialize::<Record>()
-        .map(|record| Star::from(record.unwrap()))
+        .map(|record| Star::from(record.expect("Failed to read record from catalog")))
         .filter(|star| star.coords.distance(&sol) < 17f32)
         .collect())
 }
