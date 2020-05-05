@@ -1,11 +1,11 @@
-use hyperspace::galaxy;
+use hyperspace::galaxy::Galaxy;
 
 fn main() {
     println!("Hello, world!");
 
-    let my_galaxy = galaxy::from_path("data/HabHyg.csv").expect("Failed to load star catalog");
+    let my_galaxy = Galaxy::from_path("data/HabHyg.csv").expect("Failed to load star catalog");
 
-    let neighbors = my_galaxy.len();
+    let neighbors = my_galaxy.stars.len();
 
     println!("{} nearby stars", neighbors);
 }

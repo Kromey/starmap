@@ -4,24 +4,35 @@ use super::Point3d;
 use catalog::Record;
 use std::error::Error;
 
-pub fn from_path(path: &str) -> Result<Vec<Star>, Box<dyn Error>> {
-    let sol = Point3d {
-        x: 0.0,
-        y: 0.0,
-        z: 0.0,
-    };
+#[derive(Debug)]
+pub struct Galaxy {
+    pub stars: Vec<Star>,
+}
 
-    Ok(csv::Reader::from_path(path)?
-        .deserialize::<Record>()
-        .filter_map(|record| {
-            let star = Star::from(record.expect("Failed to read record from catalog"));
-            if star.coords.distance(&sol) < 17f32 {
-                Some(star)
-            } else {
-                None
-            }
+impl Galaxy {
+    pub fn from_path(path: &str) -> Result<Self, Box<dyn Error>> {
+        let sol = Point3d {
+            x: 0.0,
+            y: 0.0,
+            z: 0.0,
+        };
+
+        let stars = csv::Reader::from_path(path)?
+            .deserialize::<Record>()
+            .filter_map(|record| {
+                let star = Star::from(record.expect("Failed to read record from catalog"));
+                if star.coords.distance(&sol) < 17f32 {
+                    Some(star)
+                } else {
+                    None
+                }
+            })
+            .collect();
+
+        Ok(Galaxy {
+            stars
         })
-        .collect())
+    }
 }
 
 #[derive(Debug)]
