@@ -9,5 +9,5 @@ fn main() {
 
     println!("{} nearby stars", neighbors);
 
-    println!("Sol: {:#?}", my_galaxy.names["Sol"]);
+    println!("Sol: {:#?}", my_galaxy.star_by_name("Sol"));
 }

@@ -42,6 +42,12 @@ impl Galaxy {
             names,
         })
     }
+
+    pub fn star_by_name(&self, name: &str) -> &Star {
+        let i = self.names[name];
+
+        &self.stars[i]
+    }
 }
 
 #[derive(Debug)]
