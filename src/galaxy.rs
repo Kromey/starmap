@@ -43,10 +43,10 @@ impl Galaxy {
         })
     }
 
-    pub fn star_by_name(&self, name: &str) -> &Star {
-        let i = self.names[name];
+    pub fn star_by_name(&self, name: &str) -> Option<&Star> {
+        let i = self.names.get(name)?;
 
-        &self.stars[i]
+        Some(&self.stars[*i])
     }
 }
 
