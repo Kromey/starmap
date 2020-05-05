@@ -8,4 +8,6 @@ fn main() {
     let neighbors = my_galaxy.stars.len();
 
     println!("{} nearby stars", neighbors);
+
+    println!("Sol: {:#?}", my_galaxy.names["Sol"]);
 }

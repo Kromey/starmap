@@ -2,11 +2,13 @@ mod catalog;
 
 use super::Point3d;
 use catalog::Record;
+use std::collections::HashMap;
 use std::error::Error;
 
 #[derive(Debug)]
 pub struct Galaxy {
     pub stars: Vec<Star>,
+    pub names: HashMap<String, usize>,
 }
 
 impl Galaxy {
@@ -17,7 +19,7 @@ impl Galaxy {
             z: 0.0,
         };
 
-        let stars = csv::Reader::from_path(path)?
+        let stars: Vec<Star> = csv::Reader::from_path(path)?
             .deserialize::<Record>()
             .filter_map(|record| {
                 let star = Star::from(record.expect("Failed to read record from catalog"));
@@ -29,8 +31,15 @@ impl Galaxy {
             })
             .collect();
 
+        let names: HashMap<String, usize> = stars
+            .iter()
+            .enumerate()
+            .map(|(i, star)| (star.name.clone(), i))
+            .collect();
+
         Ok(Galaxy {
-            stars
+            stars,
+            names,
         })
     }
 }
