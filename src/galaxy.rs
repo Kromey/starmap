@@ -35,7 +35,9 @@ impl Galaxy {
             .iter()
             .filter(|star| {
                 // Filter out any stars if they're within 0.11 pc of a brighter star
-                !stars.iter().any(|other| star.coords.distance(&other.coords) < 0.11f32 && other.abs_mag < star.abs_mag)
+                !stars.iter().any(|other| {
+                    star.coords.distance(&other.coords) < 0.11f32 && other.abs_mag < star.abs_mag
+                })
             })
             .cloned() //Need to clone because we're taking ownership
             .collect();
@@ -46,10 +48,7 @@ impl Galaxy {
             .map(|(i, star)| (star.name.clone(), i))
             .collect();
 
-        Ok(Galaxy {
-            stars,
-            names,
-        })
+        Ok(Galaxy { stars, names })
     }
 
     pub fn star_by_name(&self, name: &str) -> Option<&Star> {
@@ -59,7 +58,7 @@ impl Galaxy {
     }
 }
 
-#[derive(Clone,Debug)]
+#[derive(Clone, Debug)]
 pub struct Star {
     pub name: String,
     pub is_habitable: bool,

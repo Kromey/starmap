@@ -9,5 +9,10 @@ fn main() {
 
     println!("{} nearby stars", neighbors);
 
-    println!("Sol: {:#?}", my_galaxy.star_by_name("Sol").expect("Wait, where did our sun go??"));
+    println!(
+        "Sol: {:#?}",
+        my_galaxy
+            .star_by_name("Sol")
+            .expect("Wait, where did our sun go??")
+    );
 }
