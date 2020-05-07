@@ -1,6 +1,6 @@
 pub mod galaxy;
 
-#[derive(Debug)]
+#[derive(Clone,Debug)]
 pub struct Point3d {
     pub x: f32,
     pub y: f32,

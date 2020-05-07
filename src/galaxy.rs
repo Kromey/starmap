@@ -31,6 +31,15 @@ impl Galaxy {
             })
             .collect();
 
+        let stars: Vec<Star> = stars
+            .iter()
+            .filter(|star| {
+                // Filter out any stars if they're within 0.11 pc of a brighter star
+                !stars.iter().any(|other| star.coords.distance(&other.coords) < 0.11f32 && other.abs_mag < star.abs_mag)
+            })
+            .cloned() //Need to clone because we're taking ownership
+            .collect();
+
         let names: HashMap<String, usize> = stars
             .iter()
             .enumerate()
@@ -50,7 +59,7 @@ impl Galaxy {
     }
 }
 
-#[derive(Debug)]
+#[derive(Clone,Debug)]
 pub struct Star {
     pub name: String,
     pub is_habitable: bool,
