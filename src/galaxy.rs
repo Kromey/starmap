@@ -35,7 +35,7 @@ impl Galaxy {
             .iter()
             .filter(|star| {
                 // Filter out any stars if they're within 0.11 pc of a brighter star
-                !stars.iter().rev().any(|other| {
+                !stars.iter().any(|other| {
                     other.abs_mag < star.abs_mag && star.coords.distance(&other.coords) < 0.11f32
                 })
             })
