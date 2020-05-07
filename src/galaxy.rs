@@ -21,15 +21,20 @@ impl Galaxy {
 
         let stars: Vec<Star> = csv::Reader::from_path(path)?
             .deserialize::<Record>()
-            .filter_map(|record| {
-                let star = Star::from(record.expect("Failed to read record from catalog"));
-                if star.coords.distance(&sol) < 17f32 {
-                    Some(star)
-                } else {
-                    None
+            .filter_map(|record| -> Option<Result<Star, Box<dyn Error>>> {
+                match record {
+                    Ok(record) => {
+                        let star = Star::from(record);
+                        if star.coords.distance(&sol) < 17f32 {
+                            Some(Ok(star))
+                        } else {
+                            None
+                        }
+                    },
+                    Err(e) => Some(Err(Box::new(e))),
                 }
             })
-            .collect();
+            .collect::<Result<_, Box<dyn Error>>>()?;
 
         let stars: Vec<Star> = stars
             .iter()
