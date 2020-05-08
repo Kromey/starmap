@@ -42,7 +42,7 @@ impl OptionCorporation {
     fn make_short_name(&self) -> String {
         self.name
             .chars()
-            .filter(|c| c.is_ascii_uppercase())
+            .filter(|c| c.is_uppercase())
             .collect()
     }
 }
