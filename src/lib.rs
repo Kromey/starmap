@@ -1,3 +1,4 @@
+pub mod corporation;
 pub mod galaxy;
 
 #[derive(Clone, Debug)]

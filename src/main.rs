@@ -1,4 +1,5 @@
 use hyperspace::galaxy::Galaxy;
+use hyperspace::corporation::Corporation;
 
 fn main() {
     println!("Hello, world!");
@@ -15,4 +16,7 @@ fn main() {
             .star_by_name("Sol")
             .expect("Wait, where did our sun go??")
     );
+
+    let corps = Corporation::list_from_path("data/corps.json").expect("Failed to load corporations");
+    println!("{:#?}", corps);
 }
