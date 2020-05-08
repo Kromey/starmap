@@ -13,11 +13,7 @@ pub struct Galaxy {
 
 impl Galaxy {
     pub fn from_path(path: &str) -> Result<Self, Box<dyn Error>> {
-        let sol = Point3d {
-            x: 0.0,
-            y: 0.0,
-            z: 0.0,
-        };
+        let sol = Point3d::origin();
 
         let stars: Vec<Star> = csv::Reader::from_path(path)?
             .deserialize::<Record>()
@@ -30,7 +26,7 @@ impl Galaxy {
                         } else {
                             None
                         }
-                    },
+                    }
                     Err(e) => Some(Err(Box::new(e))),
                 }
             })
