@@ -35,15 +35,12 @@ impl Corporation {
 struct OptionCorporation {
     name: String,
     short_name: Option<String>,
-    color: (u8,u8,u8),
+    color: (u8, u8, u8),
 }
 
 impl OptionCorporation {
     fn make_short_name(&self) -> String {
-        self.name
-            .chars()
-            .filter(|c| c.is_uppercase())
-            .collect()
+        self.name.chars().filter(|c| c.is_uppercase()).collect()
     }
 }
 
@@ -57,8 +54,11 @@ impl From<OptionCorporation> for Corporation {
         Self {
             name: corp.name,
             short_name,
-            color: RGBColor { r: corp.color.0, g: corp.color.1, b: corp.color.2 },
+            color: RGBColor {
+                r: corp.color.0,
+                g: corp.color.1,
+                b: corp.color.2,
+            },
         }
     }
 }
-
