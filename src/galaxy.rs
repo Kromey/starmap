@@ -5,6 +5,8 @@ use catalog::Record;
 use std::collections::HashMap;
 use std::error::Error;
 
+pub const MAX_RANGE: f32 = 17.0;
+
 #[derive(Debug)]
 pub struct Galaxy {
     pub stars: Vec<Star>,
@@ -21,7 +23,7 @@ impl Galaxy {
                 match record {
                     Ok(record) => {
                         let star = Star::from(record);
-                        if star.coords.distance(&sol) < 17f32 {
+                        if star.coords.distance(&sol) < MAX_RANGE {
                             Some(Ok(star))
                         } else {
                             None
