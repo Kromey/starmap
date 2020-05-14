@@ -33,11 +33,12 @@ impl Point3d {
             .sqrt()
     }
 
-    pub fn clamp(self) -> Point3d {
+    pub fn clamp_axes(self, min: f32, max: f32) -> Point3d {
         Point3d {
-            x: self.x.max(-MAX_RANGE).min(MAX_RANGE),
-            y: self.y.max(-MAX_RANGE).min(MAX_RANGE),
-            z: self.z.max(-MAX_RANGE).min(MAX_RANGE),
+            // .max(min).min(max) looks backwards, but it's not...
+            x: self.x.max(min).min(max),
+            y: self.y.max(min).min(max),
+            z: self.z.max(min).min(max),
         }
     }
 }
