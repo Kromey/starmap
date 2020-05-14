@@ -5,7 +5,8 @@ use catalog::Record;
 use std::collections::HashMap;
 use std::error::Error;
 
-pub const MAX_RANGE: f32 = 17.0;
+const MAX_RANGE: f32 = 17.0;
+const BUCKET_RANGE: f32 = 3.0;
 
 #[derive(Debug)]
 pub struct Galaxy {
@@ -68,6 +69,16 @@ pub struct Star {
     pub spectral_class: String,
     pub abs_mag: f32,
     pub coords: Point3d,
+}
+
+impl Star {
+    pub fn bucket(&self) -> i32 {
+        super::cantor3(
+            ((self.coords.x + MAX_RANGE) / BUCKET_RANGE) as i32,
+            ((self.coords.y + MAX_RANGE) / BUCKET_RANGE) as i32,
+            ((self.coords.z + MAX_RANGE) / BUCKET_RANGE) as i32,
+        )
+    }
 }
 
 impl From<Record> for Star {

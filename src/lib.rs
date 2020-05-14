@@ -2,10 +2,6 @@ pub mod corporation;
 pub mod exploration;
 pub mod galaxy;
 
-use galaxy::MAX_RANGE;
-
-const BUCKET_RANGE: f32 = 3.0;
-
 #[inline]
 fn cantor3(x: i32, y: i32, z: i32) -> i32 {
     cantor2(cantor2(x, y), z)
@@ -35,14 +31,6 @@ impl Point3d {
     pub fn distance(&self, other: &Point3d) -> f32 {
         ((self.x - other.x).powi(2) + (self.y - other.y).powi(2) + (self.z - other.z).powi(2))
             .sqrt()
-    }
-
-    pub fn bucket(&self) -> i32 {
-        cantor3(
-            ((self.x + MAX_RANGE) / BUCKET_RANGE) as i32,
-            ((self.y + MAX_RANGE) / BUCKET_RANGE) as i32,
-            ((self.z + MAX_RANGE) / BUCKET_RANGE) as i32,
-        )
     }
 
     pub fn clamp(self) -> Point3d {

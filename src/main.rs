@@ -20,10 +20,4 @@ fn main() {
     let corps =
         Corporation::list_from_path("data/corps.json").expect("Failed to load corporations");
     println!("{:#?}", corps);
-
-    let point = hyperspace::Point3d::from((11.4f32, -11.7f32, -1.3f32));
-    println!("{:?} => {:?}", point, point.bucket());
-
-    let point = hyperspace::Point3d::from((21.4f32, -18.7f32, -1.3f32));
-    println!("{:?} => {:?} => {:?}", point, point.clamp(), point.clamp().bucket());
 }
