@@ -97,3 +97,38 @@ impl From<Record> for Star {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn bucket() {
+        let sol = Star {
+            name: "Sol".into(),
+            is_habitable: true,
+            spectral_class: "G2V".into(),
+            abs_mag: 4.85,
+            coords: Point3d {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
+        };
+
+        let procyon = Star {
+            name: "Sol".into(),
+            is_habitable: false,
+            spectral_class: "F5IV-V".into(),
+            abs_mag: 2.66,
+            coords: Point3d {
+                x: -2.8,
+                y: -1.9,
+                z: 0.8,
+            },
+        };
+
+        assert_eq!(sol.bucket(), 2205);
+        assert_eq!(procyon.bucket(), 1534);
+    }
+}
