@@ -84,7 +84,7 @@ impl Star {
 impl From<Record> for Star {
     fn from(record: Record) -> Self {
         Star {
-            is_habitable: record.name == "1",
+            is_habitable: record.is_habitable == "1",
             name: record.name,
             spectral_class: record.spectral_class,
             abs_mag: record.abs_mag,
