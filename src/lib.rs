@@ -3,12 +3,12 @@ pub mod exploration;
 pub mod galaxy;
 
 #[inline]
-fn cantor3(x: i32, y: i32, z: i32) -> i32 {
+fn cantor3(x: u32, y: u32, z: u32) -> u32 {
     cantor2(cantor2(x, y), z)
 }
 
 #[inline]
-fn cantor2(x: i32, y: i32) -> i32 {
+fn cantor2(x: u32, y: u32) -> u32 {
     (x + y)*(x + y + 1)/2 + x
 }
 

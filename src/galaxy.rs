@@ -72,11 +72,11 @@ pub struct Star {
 }
 
 impl Star {
-    pub fn bucket(&self) -> i32 {
+    pub fn bucket(&self) -> u32 {
         super::cantor3(
-            ((self.coords.x + MAX_RANGE) / BUCKET_RANGE) as i32,
-            ((self.coords.y + MAX_RANGE) / BUCKET_RANGE) as i32,
-            ((self.coords.z + MAX_RANGE) / BUCKET_RANGE) as i32,
+            ((self.coords.x + MAX_RANGE) / BUCKET_RANGE) as u32,
+            ((self.coords.y + MAX_RANGE) / BUCKET_RANGE) as u32,
+            ((self.coords.z + MAX_RANGE) / BUCKET_RANGE) as u32,
         )
     }
 }
