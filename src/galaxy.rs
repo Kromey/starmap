@@ -6,7 +6,7 @@ use std::collections::HashMap;
 use std::error::Error;
 
 const MAX_RANGE: f32 = 17.0;
-const BUCKET_RANGE: f32 = 3.0;
+const BUCKET_RANGE: f32 = 6.0;
 
 #[derive(Debug)]
 pub struct Galaxy {
