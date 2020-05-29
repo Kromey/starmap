@@ -5,12 +5,12 @@ use catalog::Record;
 use std::collections::HashMap;
 use std::error::Error;
 
-const MAX_RANGE: f32 = 17.0;
-const BUCKET_RANGE: f32 = 6.0;
+pub const MAX_RANGE: f32 = 17.0;
 
 #[derive(Debug)]
 pub struct Galaxy {
     pub stars: Vec<Star>,
+    pub buckets: HashMap<u32, Vec<usize>>,
     pub names: HashMap<String, usize>,
 }
 
@@ -46,19 +46,31 @@ impl Galaxy {
             .cloned() //Need to clone because we're taking ownership
             .collect();
 
+        let mut buckets: HashMap<u32, Vec<usize>> = HashMap::new();
+
+        stars.iter()
+            .enumerate()
+            .for_each(|(i, star)| buckets.entry(star.bucket()).or_insert(Vec::<usize>::new()).push(i));
+
         let names: HashMap<String, usize> = stars
             .iter()
             .enumerate()
             .map(|(i, star)| (star.name.clone(), i))
             .collect();
 
-        Ok(Galaxy { stars, names })
+        Ok(Galaxy { stars, buckets, names })
     }
 
     pub fn star_by_name(&self, name: &str) -> Option<&Star> {
         let i = self.names.get(name)?;
 
         Some(&self.stars[*i])
+    }
+
+    pub fn stars_by_bucket(&self, bucket: u32) -> Option<Vec<&Star>> {
+        let stars = self.buckets.get(&bucket)?;
+
+        Some(stars.iter().map(|i| &self.stars[*i]).collect())
     }
 }
 
@@ -73,11 +85,7 @@ pub struct Star {
 
 impl Star {
     pub fn bucket(&self) -> u32 {
-        super::cantor3(
-            ((self.coords.x + MAX_RANGE) / BUCKET_RANGE) as u32,
-            ((self.coords.y + MAX_RANGE) / BUCKET_RANGE) as u32,
-            ((self.coords.z + MAX_RANGE) / BUCKET_RANGE) as u32,
-        )
+        self.coords.bucket()
     }
 }
 

@@ -1,16 +1,10 @@
+mod point_bucket;
 pub mod corporation;
 pub mod exploration;
 pub mod galaxy;
 
-#[inline]
-fn cantor3(x: u32, y: u32, z: u32) -> u32 {
-    cantor2(cantor2(x, y), z)
-}
-
-#[inline]
-fn cantor2(x: u32, y: u32) -> u32 {
-    (x + y)*(x + y + 1)/2 + x
-}
+use galaxy::MAX_RANGE;
+use point_bucket::{BucketIter, BucketPoint};
 
 #[derive(Copy, Clone, Debug, PartialEq, PartialOrd)]
 pub struct Point3d {
@@ -40,6 +34,29 @@ impl Point3d {
             y: self.y.max(min).min(max),
             z: self.z.max(min).min(max),
         }
+    }
+
+    pub fn bucket_point(&self) -> BucketPoint {
+        self.into()
+    }
+
+    pub fn bucket(&self) -> u32 {
+        self.bucket_point().bucket()
+    }
+
+    pub fn bucket_range(&self, radius: f32) -> BucketIter {
+        let start = Point3d {
+            x: self.x - radius,
+            y: self.y - radius,
+            z: self.z - radius,
+        }.clamp_axes(-MAX_RANGE, MAX_RANGE).bucket_point();
+        let end = Point3d {
+            x: self.x + radius,
+            y: self.y + radius,
+            z: self.z + radius,
+        }.clamp_axes(-MAX_RANGE, MAX_RANGE).bucket_point();
+
+        BucketIter::new(start, end)
     }
 }
 

@@ -11,32 +11,30 @@ fn main() {
 
     println!("{} nearby stars", neighbors);
 
-    println!(
-        "Sol: {:#?}",
-        my_galaxy
+    let sol = my_galaxy
             .star_by_name("Sol")
-            .expect("Wait, where did our sun go??")
-    );
+            .expect("Wait, where did our sun go??");
+    println!("Sol: {:#?}", sol);
 
     let corps =
         Corporation::list_from_path("data/corps.json").expect("Failed to load corporations");
     println!("{:#?}", corps);
 
-    let mut buckets: HashMap<u32, Vec<usize>> = HashMap::new();
+    let mut neighbors = 0;
+    let mut raw_neighbors = 0;
+    for bucket in sol.coords.bucket_range(5.3) {
+        if let Some(stars) = my_galaxy.stars_by_bucket(bucket) {
+            println!("Bucket {} has {} stars", bucket, stars.len());
+            raw_neighbors += stars.len();
 
-    my_galaxy.stars.iter()
-        .enumerate()
-        .for_each(|(i, star)| buckets.entry(star.bucket()).or_insert(Vec::<usize>::new()).push(i));
-
-    println!("Total buckets: {}", buckets.len());
-    println!("Smallest bucket: {:?}", buckets.iter().min_by_key(|(_, bucket)| bucket.len()).unwrap());
-    println!("Largest bucket: {:?}", buckets.iter().max_by_key(|(_, bucket)| bucket.len()).unwrap());
-
-    let avg = buckets
-        .iter()
-        .map(|(_, bucket)| bucket.len())
-        .sum::<usize>() as f32
-        / buckets.len() as f32;
-
-    println!("Average bucket: {} stars", avg);
+            for star in stars {
+                if star.coords.distance(&sol.coords) <= 5.3 {
+                    neighbors += 1;
+                }
+            }
+        } else {
+            println!("Nothing in bucket {}", bucket);
+        }
+    }
+    println!("Sol checked {} stars to find {} neighbors", raw_neighbors, neighbors);
 }
