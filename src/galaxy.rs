@@ -8,11 +8,14 @@ use std::error::Error;
 
 pub const MAX_RANGE: f32 = 17.0;
 
+type StarBuckets = HashMap<u32, Vec<usize>>;
+type StarNames = HashMap<String, usize>;
+
 #[derive(Debug)]
 pub struct Galaxy {
     pub stars: Vec<Star>,
-    pub buckets: HashMap<u32, Vec<usize>>,
-    pub names: HashMap<String, usize>,
+    pub buckets: StarBuckets,
+    pub names: StarNames,
 }
 
 impl Galaxy {
@@ -47,13 +50,13 @@ impl Galaxy {
             .cloned() //Need to clone because we're taking ownership
             .collect();
 
-        let mut buckets: HashMap<u32, Vec<usize>> = HashMap::new();
+        let mut buckets = StarBuckets::new();
 
         stars.iter()
             .enumerate()
             .for_each(|(i, star)| buckets.entry(star.bucket()).or_insert(Vec::<usize>::new()).push(i));
 
-        let names: HashMap<String, usize> = stars
+        let names: StarNames = stars
             .iter()
             .enumerate()
             .map(|(i, star)| (star.name.clone(), i))
