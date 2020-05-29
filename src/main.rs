@@ -1,6 +1,5 @@
 use hyperspace::corporation::Corporation;
 use hyperspace::galaxy::Galaxy;
-use std::collections::HashMap;
 
 fn main() {
     println!("Hello, world!");
