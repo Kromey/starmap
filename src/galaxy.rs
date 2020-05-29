@@ -1,6 +1,7 @@
 mod catalog;
 
 use super::Point3d;
+use super::point_bucket::BucketIter;
 use catalog::Record;
 use std::collections::HashMap;
 use std::error::Error;
@@ -86,6 +87,14 @@ pub struct Star {
 impl Star {
     pub fn bucket(&self) -> u32 {
         self.coords.bucket()
+    }
+
+    pub fn distance(&self, other: &Star) -> f32 {
+        self.coords.distance(&other.coords)
+    }
+
+    pub fn range(&self, radius: f32) -> BucketIter {
+        self.coords.bucket_range(radius)
     }
 }
 

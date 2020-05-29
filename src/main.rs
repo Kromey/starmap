@@ -22,13 +22,13 @@ fn main() {
 
     let mut neighbors = 0;
     let mut raw_neighbors = 0;
-    for bucket in sol.coords.bucket_range(5.3) {
+    for bucket in sol.range(5.3) {
         if let Some(stars) = my_galaxy.stars_by_bucket(bucket) {
             println!("Bucket {} has {} stars", bucket, stars.len());
             raw_neighbors += stars.len();
 
             for star in stars {
-                if star.coords.distance(&sol.coords) <= 5.3 {
+                if star.distance(&sol) <= 5.3 {
                     neighbors += 1;
                 }
             }
